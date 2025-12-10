@@ -1,13 +1,12 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 
 using namespace std;
 
 template <typename data_type>
 
 class Dynamic_array{
-
 private:
 
     data_type* arr;
@@ -31,7 +30,7 @@ public:
         arr = new data_type[max_n];
     }
 
-    void del_all(){
+    void clear_all(){
         delete[] arr;
     }
 
@@ -59,8 +58,7 @@ public:
         cur_n--;
     }
 
-    data_type get_val(int id){
+    data_type get(int id){
         return arr[id];
     }
-
 };
