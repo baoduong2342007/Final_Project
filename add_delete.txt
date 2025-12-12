@@ -1,0 +1,10 @@
+1) Income
+- thêm income X:
+	+Nếu tồn tại một phần tử trong list Income mà có name và date giống income X thì hỏi người dùng xem cs muốn thay cái cũ bằng X.
+	+Nếu không thì cứ thêm vào bình thường.
+- xoá income X:
+	+Nếu tồn tại một phần tử thì trong list Income mà có name và date giống income X thì xoá phần tử đó.
+	+Không thì ko làm gì cả.
+
+2) Expense
+3) Wallet

@@ -16,6 +16,14 @@ Date current_date(){
     return ans;
 }
 
+void input_date(Date &X){
+    cout << "Date : "; cin >> X.day >> X.month >> X.year;
+}
+
+void output_date(Date &X){
+    cout << "Date : " << X.day << " " << X.month << " " << X.year << "\n";
+}
+
 bool is_leap_year(Date X){
     if (X.year % 4 != 0) return false;
     if (X.year % 100 == 0){

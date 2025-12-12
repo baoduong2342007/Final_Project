@@ -10,6 +10,9 @@ class Dynamic_array{
 private:
 
     data_type* arr;
+
+public:
+
     int cur_n , max_n;
 
     void expand(){
@@ -22,8 +25,6 @@ private:
         max_n *= 2;
     }
 
-public:
-
     Dynamic_array(){
         cur_n = 0;
         max_n = 1;
@@ -34,31 +35,37 @@ public:
         delete[] arr;
     }
 
-    int find_id(data_type X){
+    data_type get_val(int id){
+        return arr[id];
+    }
+
+    bool exist(data_type &X){
+        for (int i = 0 ; i < cur_n ; i++){
+            if (arr[i] == X) return true;
+        }
+        return false;
+    }
+
+    int find_pos(data_type &X){
         for (int i = 0 ; i < cur_n ; i++){
             if (arr[i] == X) return i;
         }
-        return -1;
+        return cur_n;
     }
 
-    void add(data_type X){
-        int p = find_id(X);
-        if (p != -1) return;
-        if (cur_n + 1 > max_n) expand();
-        arr[cur_n] = X;
+    void ins(int pos , data_type &X){
+        if (cur_n == max_n) expand();
+        for (int i = cur_n ; i > pos ; i--){
+            arr[i] = arr[i - 1];
+        }
+        arr[pos] = X;
         cur_n++;
     }
 
-    void del(data_type X){
-        int p = find_id(X);
-        if (p == -1) return;
-        for (int i = p + 1 ; i < cur_n ; i++){
+    void del(int pos , data_type &X){
+        for (int i = pos + 1 ; i < cur_n ; i++){
             arr[i - 1] = arr[i];
         }
         cur_n--;
-    }
-
-    data_type get(int id){
-        return arr[id];
     }
 };

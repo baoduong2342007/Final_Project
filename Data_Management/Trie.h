@@ -8,15 +8,15 @@ using namespace std;
 const int max_char = 128;
 
 struct Trie_node{
-    int cnt[max_char];
+    int cnt_string , cnt_transaction;
     pair<Trie_node* , int> par;
     Trie_node* child[max_char];
     bool end_of_string;
 
     Trie_node(){
-        par = make_pair(nullptr , -1);
+        cnt_string = cnt_transaction = 0;
+        par = make_pair(nullptr , 0);
         for (int c = 0 ; c < max_char ; c++){
-            cnt[c] = 0;
             child[c] = nullptr;
         }
         end_of_string = false;
@@ -71,12 +71,12 @@ struct Trie{
         Trie_node* cur = head;
         for (int i = 0 ; i < int(s.size()) ; i++){
             int c = int(s[i]);
-            cur->cnt[c]++;
             if (cur->child[c] == nullptr){
                 cur->child[c] = new Trie_node();
                 cur->child[c]->par = make_pair(cur , c);
             }
             cur = cur->child[c];
+            cur->cnt_string++;
         }
         cur->end_of_string = true;
     }
@@ -85,13 +85,14 @@ struct Trie{
         Trie_node* cur = head;
         for (int i = 0 ; i < int(s.size()) ; i++){
             int c = int(s[i]);
-            cur->cnt[c]--;
-            if (cur->cnt[c] == 0){
-                clear_all(cur->child[c]);
-                cur->child[c] = nullptr;
-                break;
-            }
             cur = cur->child[c];
+            cur->cnt_string--;
+            if (cur->cnt_string == 0){
+                Trie_node* par_node = cur->par.first;
+                par_node->child[c] = nullptr;
+                clear_all(cur);
+                return;
+            }
         }
         cur->end_of_string = false;
     }
