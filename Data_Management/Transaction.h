@@ -28,5 +28,12 @@ struct Transaction{
         if (description != other.description) return false;
         return true;
     }
+
+    bool operator < (const Transaction &other) const{
+        if (same_date(date , other.date) == false){
+            return compare_date(date , other.date) < 0;
+        }
+        return source < other.source;
+    }
 };
 

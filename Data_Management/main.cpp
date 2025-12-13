@@ -92,27 +92,35 @@ void add_transaction(Transaction &X){
         return;
     }
     int pos = event.find_pos(X);
-    if (pos != event.cur_n){
-        cout << "This transaction has already existed\n";
+    if (pos == event.cur_n){
+        cout << "This transaction does not exist\n";
         cout << "Failed\n";
     }
     else{
-        long long S = -X.amount;
         bool is_negative = false;
         if (X.source == 2){
+            long long S = -X.amount;
             for (int i = 0 ; i < event.cur_n ; i++){
                 Transaction Y = event.get_val(i);
-                if (X.wallet_id == Y.wallet_id && compare_date(X.date , Y.date) >= 0){
-                    if (Y.source == 1) S += Y.amount; else S -= Y.amount;
+                if (X.wallet_id == Y.wallet_id){
+                    S += (Y.source == 1) ? +Y.amount : -Y.amount;
+                    if (Y < X) continue;
+                    if (S < 0) is_negative = true;
                 }
             }
-            is_negative = (S < 0);
         }
         if (is_negative == true){
             cout << "There is not enough money to perform insert transaction\n";
             cout << "Failed\n";
         }
         else{
+            for (int i = 0 ; i < event.cur_n ; i++){
+                Transaction Y = event.get_val(i);
+                if (X < Y){
+                    pos = i;
+                    break;
+                }
+            }
             event.ins(pos , X);
             X.source_id->cnt_transaction++;
             X.wallet_id->cnt_transaction++;
@@ -139,16 +147,17 @@ void del_transaction(Transaction &X){
         cout << "Failed\n";
     }
     else{
-        long long S = -X.amount;
         bool is_negative = false;
         if (X.source == 1){
+            long long S = -X.amount * 2;
             for (int i = 0 ; i < event.cur_n ; i++){
                 Transaction Y = event.get_val(i);
-                if (X.wallet_id == Y.wallet_id && compare_date(X.date , Y.date) >= 0){
-                    if (Y.source == 1) S += Y.amount; else S -= Y.amount;
+                if (X.wallet_id == Y.wallet_id){
+                    S += (Y.source == 1) ? +Y.amount : -Y.amount;
+                    if (Y < X) continue;
+                    if (S < 0) is_negative = true;
                 }
             }
-            is_negative = (S < 0);
         }
         if (is_negative == true){
             cout << "There is not enough money to delete this transaction\n";
