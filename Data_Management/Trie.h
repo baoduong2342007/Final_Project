@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bits/stdc++.h>
+#include "Dynamic_array.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ struct Trie_node{
     pair<Trie_node* , int> par;
     Trie_node* child[max_char];
     bool end_of_string;
+    int id;
 
     Trie_node(){
         cnt_string = cnt_transaction = 0;
@@ -20,6 +22,7 @@ struct Trie_node{
             child[c] = nullptr;
         }
         end_of_string = false;
+        id = -1;
     }
 };
 
@@ -28,9 +31,11 @@ struct Trie_node{
 
 struct Trie{
     Trie_node* head;
+    int ID;
 
     Trie(){
         head = new Trie_node();
+        ID = 0;
     }
 
     void clear_all(Trie_node* cur){
@@ -97,10 +102,55 @@ struct Trie{
         cur->end_of_string = false;
     }
 
-    void print(Trie_node* cur){
-        if (cur == head) return;
-        print(cur->par.first);
-        cout << char(cur->par.second);
+    string get_string(Trie_node* cur){
+        string s;
+        while (cur != head){
+            s.push_back(char(cur->par.second));
+            cur = cur->par.first;
+        }
+        reverse(s.begin() , s.end());
+        return s;
     }
-    //print does not (endl or "\n")
+
+    void dfs_string(Trie_node *cur , string &s , Dynamic_array<string> &arr){
+        if (cur->end_of_string == true){
+            arr.push_back(s);
+            cur->id = ID++;
+        }
+        else{
+            cur->id = -1;
+        }
+        for (int c = 0 ; c < max_char ; c++){
+            if (cur->child[c] != nullptr){
+                s.push_back(char(c));
+                dfs_string(cur->child[c] , s , arr);
+                s.pop_back();
+            }
+        }
+    }
+
+    Dynamic_array<string> get_arr_string(){
+        ID = 0;
+        Dynamic_array<string> arr;
+        string s;
+        dfs_string(head , s , arr);
+        return arr;
+    }
+
+    void dfs_id(Trie_node *cur , Dynamic_array<Trie_node*> &arr){
+        if (cur->end_of_string == true){
+            arr.push_back(cur);
+        }
+        for (int c = 0 ; c < max_char ; c++){
+            if (cur->child[c] != nullptr){
+                dfs_id(cur->child[c] , arr);
+            }
+        }
+    }
+
+    Dynamic_array<Trie_node*> get_arr_id(){
+        Dynamic_array<Trie_node*> arr;
+        dfs_id(head , arr);
+        return arr;
+    }
 };

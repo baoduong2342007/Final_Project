@@ -62,10 +62,19 @@ public:
         cur_n++;
     }
 
-    void del(int pos , data_type &X){
+    void del(int pos){
         for (int i = pos + 1 ; i < cur_n ; i++){
             arr[i - 1] = arr[i];
         }
         cur_n--;
+    }
+
+    void push_back(data_type &X){
+        ins(cur_n , X);
+    }
+
+    void pop_back(data_type){
+        if (cur_n == 0) return;
+        del(cur_n - 1);
     }
 };
