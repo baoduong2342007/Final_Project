@@ -97,43 +97,57 @@ void del_transaction(Transaction &X){
 }
 
 void particular_transaction(int source){
-    separate();
     int t; string s , name = (source == 1) ? "Income" : "Expense";
+    //
+    clear_screen();
+    separate();
+    cout << "Transaction : " << name << "\n";
+    separate();
+    cout << "[0]. Back\n";
+    cout << "[1]. Insert\n";
+    cout << "[2]. Delete\n";
+    separate();
+    //
     Transaction X;
-    cout << "0. Back\n";
-    cout << "1. Insert transaction\n";
-    cout << "2. Delete transaction\n";
-    cout << "Choose : "; cin >> t;
+    t = safe_input_int(0 , 2);
     if (t == 0) return;
     //
     X.source = source;
     //
     input_date(X.date);
     //
-    cout << name << " name : "; cin.ignore(); getline(cin , s);
+    cout << "- " << name << " name :\n";
+    s = safe_input_string();
     X.source_id = (source == 1) ? income.get_id(s) : expense.get_id(s);
     //
-    cout << "Amount : "; cin >> X.amount;
+    cout << "- Amount :\n";
+    X.amount = safe_input_long_long(0);
     //
-    cout << "Wallet name : "; cin.ignore(); getline(cin , s);
+    cout << "- Wallet name :\n";
+    s = safe_input_string();
     X.wallet_id = wallet.get_id(s);
     //
-    cout << "Description : "; getline(cin , X.description);
+    cout << "- Description :\n";
+    X.description = safe_input_string();
+    pause();
+    //
     if (t == 1) add_transaction(X);
     if (t == 2) del_transaction(X);
 }
 
 void manage_transaction(){
-    int t;
     while (true){
+        clear_screen();
         separate();
-        cout << "0. Back\n";
-        cout << "1. Income\n";
-        cout << "2. Expense\n";
-        cout << "Choose : "; cin >> t;
+        cout << "Manage Transactions\n";
+        separate();
+        cout << "[0] Back\n";
+        cout << "[1] Income\n";
+        cout << "[2] Expense\n";
+        separate();
+        int t = safe_input_int(0 , 2);
         if (t == 0) break;
         particular_transaction(t);
     }
-    save();
 }
 

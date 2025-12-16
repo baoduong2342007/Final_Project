@@ -15,4 +15,16 @@ extern Trie expense;
 
 void separate();
 
+void clear_screen();
+
+void pause();
+
+void resetInputStream();
+
+int safe_input_int(int l , int r);
+
+long long safe_input_long_long(long long x);
+
+string safe_input_string();
+
 void clear_all();
