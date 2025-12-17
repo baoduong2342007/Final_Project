@@ -1,0 +1,11 @@
+# Ignore executable files
+*.exe
+*.cbp
+*.depend
+*.layout
+*.depend
+
+# Ignore build directories
+build/
+release/
+debug/
