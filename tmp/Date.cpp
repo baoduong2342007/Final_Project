@@ -16,12 +16,12 @@ Date current_date(){
     return ans;
 }
 
-void input_date(Date &X){
-    cout << "Date : "; cin >> X.day >> X.month >> X.year;
-}
-
-void output_date(Date &X){
-    cout << "Date : " << X.day << " " << X.month << " " << X.year << "\n";
+bool valid_date(Date X){
+    if (X.month < 1 || X.month > 12) return false;
+    int num = day_of_month[X.month - 1];
+    if (X.month == 2 && is_leap_year(X) == true) num++;
+    if (X.day < 1 || X.day > num) return false;
+    return true;
 }
 
 bool is_leap_year(Date X){

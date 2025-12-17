@@ -21,10 +21,12 @@ void pause();
 
 void resetInputStream();
 
-int safe_input_int(int l , int r);
+int input_int(int l , int r);
 
-long long safe_input_long_long(long long x);
+long long input_long_long(long long x);
 
-string safe_input_string();
+string input_string();
+
+Date input_date();
 
 void clear_all();

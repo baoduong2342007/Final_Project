@@ -4,6 +4,8 @@
 
 using namespace std;
 
+const int day_of_month[12] = {31 , 28 , 31 , 30 , 31 , 30 , 31 , 31 , 30 , 31 , 30 , 31};
+
 struct Date{
     int day , month , year;
 
@@ -12,9 +14,11 @@ struct Date{
     }
 };
 
+bool valid_date(Date X);
+
 void input_date(Date &X);
 
-void output_date(Date &X);
+void output_date(Date X);
 
 Date current_date();
 

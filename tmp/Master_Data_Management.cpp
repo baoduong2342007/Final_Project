@@ -11,7 +11,7 @@ void particular_data(Trie &data , string name){
     cout << "[2] Delete\n";
     separate();
     int t; string s;
-    t = safe_input_int(0 , 2);
+    t = input_int(0 , 2);
     if (t == 0) return;
     if (t == 1){
         clear_screen();
@@ -19,9 +19,9 @@ void particular_data(Trie &data , string name){
         cout << "Insert : " << name << "\n";
         separate();
         cout << "- Name :\n";
-        s = safe_input_string();
+        s = input_string();
         if (data.exist(s) == true){
-            cout << "=> This " << name << " already exists => Failed\n";
+            cout << "=> This " << name << " already exists\n";
         }
         else{
             cout << "=> Successful\n";
@@ -36,7 +36,7 @@ void particular_data(Trie &data , string name){
         cout << "Delete : " << name << "\n";
         separate();
         cout << "- Name :\n";
-        s = safe_input_string();
+        s = input_string();
         if (data.exist(s) == false){
             cout << "This " << name << " does not exist => Failed\n";
         }
@@ -65,7 +65,7 @@ void manage_master_data(){
         cout << "[2] Income\n";
         cout << "[3] Expense\n";
         separate();
-        int t = safe_input_int(0 , 3);
+        int t = input_int(0 , 3);
         if (t == 0) break;
         if (t == 1) particular_data(wallet , "wallet");
         if (t == 2) particular_data(income , "income");

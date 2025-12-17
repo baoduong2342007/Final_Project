@@ -1,0 +1,59 @@
+# depslib dependency file v1.0
+1765962603 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\data_persistence.cpp
+	<bits/stdc++.h>
+	"Data_Persistence.h"
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\data_persistence.h
+	"Global.h"
+
+1765961585 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\global.h
+	<bits/stdc++.h>
+	"Dynamic_array.h"
+	"Transaction.h"
+	"Trie.h"
+	"Date.h"
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\dynamic_array.h
+	<bits/stdc++.h>
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\transaction.h
+	<bits/stdc++.h>
+	"Date.h"
+	"Trie.h"
+
+1765958741 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\date.h
+	<bits/stdc++.h>
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\trie.h
+	<bits/stdc++.h>
+	"Dynamic_array.h"
+
+1765961358 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\date.cpp
+	<bits/stdc++.h>
+	"date.h"
+
+1765961934 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\global.cpp
+	"Global.h"
+
+1765962296 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\main.cpp
+	<bits/stdc++.h>
+	"Global.h"
+	"Data_Persistence.h"
+	"Master_Data_Management.h"
+	"Transaction_Management.h"
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\master_data_management.h
+	"Global.h"
+
+1765957370 d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\transaction_management.h
+	<bits/stdc++.h>
+	"Global.h"
+
+1765962154 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\master_data_management.cpp
+	"Master_Data_Management.h"
+	"Data_Persistence.h"
+
+1765960612 source:d:\apcs(2025-2026)\hk1\introduction to computer science\final_project\tmp\transaction_management.cpp
+	"Transaction_Management.h"
+	"Data_Persistence.h"
+

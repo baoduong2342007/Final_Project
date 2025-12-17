@@ -17,7 +17,7 @@ int main(){
         cout << "[1] Manage Master Data\n";
         cout << "[2] Manage Transactions\n";
         separate();
-        int t = safe_input_int(0 , 2);
+        int t = input_int(0 , 2);
         if (t == 0) break;
         if (t == 1) manage_master_data();
         if (t == 2) manage_transaction();

@@ -109,27 +109,34 @@ void particular_transaction(int source){
     separate();
     //
     Transaction X;
-    t = safe_input_int(0 , 2);
+    t = input_int(0 , 2);
     if (t == 0) return;
+    //
+    clear_screen();
+    separate();
+    if (t == 1) cout << "Insert "; else cout << "Delete ";
+    cout << name << "\n";
+    separate();
     //
     X.source = source;
     //
-    input_date(X.date);
+    cout << "- Date :\n";
+    X.date = input_date();
     //
     cout << "- " << name << " name :\n";
-    s = safe_input_string();
+    s = input_string();
     X.source_id = (source == 1) ? income.get_id(s) : expense.get_id(s);
     //
     cout << "- Amount :\n";
-    X.amount = safe_input_long_long(0);
+    X.amount = input_long_long(0);
     //
     cout << "- Wallet name :\n";
-    s = safe_input_string();
+    s = input_string();
     X.wallet_id = wallet.get_id(s);
     //
     cout << "- Description :\n";
-    X.description = safe_input_string();
-    pause();
+    X.description = input_string();
+    exit(0);
     //
     if (t == 1) add_transaction(X);
     if (t == 2) del_transaction(X);
@@ -145,7 +152,7 @@ void manage_transaction(){
         cout << "[1] Income\n";
         cout << "[2] Expense\n";
         separate();
-        int t = safe_input_int(0 , 2);
+        int t = input_int(0 , 2);
         if (t == 0) break;
         particular_transaction(t);
     }
