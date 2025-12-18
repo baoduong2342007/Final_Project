@@ -16,6 +16,10 @@ Date current_date(){
     return ans;
 }
 
+void output_date(Date &X){
+    cout << X.day << "/" << X.month << "/" << X.year << "\n";
+}
+
 bool valid_date(Date X){
     if (X.month < 1 || X.month > 12) return false;
     int num = day_of_month[X.month - 1];

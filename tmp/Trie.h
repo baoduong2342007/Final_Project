@@ -1,11 +1,8 @@
 #pragma once
-
 #include <bits/stdc++.h>
 #include "Dynamic_array.h"
-
 using namespace std;
 
-//ASCII have 128 character : 0 -> 127
 const int max_char = 128;
 
 struct Trie_node{
@@ -18,38 +15,36 @@ struct Trie_node{
     Trie_node(){
         cnt_string = cnt_transaction = 0;
         par = make_pair(nullptr , 0);
-        for (int c = 0 ; c < max_char ; c++){
-            child[c] = nullptr;
-        }
+        for (int c = 0 ; c < max_char ; c++) child[c] = nullptr;
         end_of_string = false;
         id = -1;
     }
 };
 
-//Trie also calls prefix subtree
-//link : https://wiki.vnoi.info/algo/string/trie
-
 struct Trie{
     Trie_node* head;
     int ID;
 
-    Trie(){
-        head = new Trie_node();
-        ID = 0;
-    }
+    Trie(){ head = new Trie_node(); ID = 0; }
 
-    void clear_all(Trie_node* cur){
+    ~Trie(){ clear_all(); delete head; }
+
+    void clear_recursive(Trie_node* cur){
+        if(!cur) return;
         for (int c = 0 ; c < max_char ; c++){
             if (cur->child[c] != nullptr){
-                clear_all(cur->child[c]);
+                clear_recursive(cur->child[c]);
             }
         }
         delete cur;
     }
 
     void clear_all(){
-        clear_all(head);
-        head = nullptr;
+        for(int c=0; c<max_char; c++)
+            if(head->child[c]) clear_recursive(head->child[c]);
+
+        for(int c=0; c<max_char; c++) head->child[c] = nullptr;
+        ID = 0;
     }
 
     bool exist(string &s){
@@ -69,7 +64,7 @@ struct Trie{
             if (cur->child[c] == nullptr) return nullptr;
             cur = cur->child[c];
         }
-        if (cur->end_of_string == true) return cur; else return nullptr;
+        return (cur->end_of_string) ? cur : nullptr;
     }
 
     void ins(string &s){
@@ -92,10 +87,10 @@ struct Trie{
             int c = int(s[i]);
             cur = cur->child[c];
             cur->cnt_string--;
-            if (cur->cnt_string == 0){
+             if (cur->cnt_string == 0){
                 Trie_node* par_node = cur->par.first;
                 par_node->child[c] = nullptr;
-                clear_all(cur);
+                clear_recursive(cur);
                 return;
             }
         }
@@ -104,7 +99,7 @@ struct Trie{
 
     string get_string(Trie_node* cur){
         string s;
-        while (cur != head){
+        while (cur != head && cur != nullptr){
             s.push_back(char(cur->par.second));
             cur = cur->par.first;
         }
@@ -113,15 +108,13 @@ struct Trie{
     }
 
     void dfs_string(Trie_node *cur , string &s , Dynamic_array<string> &arr){
-        if (cur->end_of_string == true){
+        if (cur->end_of_string){
             arr.push_back(s);
             cur->id = ID++;
-        }
-        else{
-            cur->id = -1;
-        }
+        } else cur->id = -1;
+
         for (int c = 0 ; c < max_char ; c++){
-            if (cur->child[c] != nullptr){
+            if (cur->child[c]){
                 s.push_back(char(c));
                 dfs_string(cur->child[c] , s , arr);
                 s.pop_back();
@@ -138,13 +131,9 @@ struct Trie{
     }
 
     void dfs_id(Trie_node *cur , Dynamic_array<Trie_node*> &arr){
-        if (cur->end_of_string == true){
-            arr.push_back(cur);
-        }
+        if (cur->end_of_string) arr.push_back(cur);
         for (int c = 0 ; c < max_char ; c++){
-            if (cur->child[c] != nullptr){
-                dfs_id(cur->child[c] , arr);
-            }
+            if (cur->child[c]) dfs_id(cur->child[c] , arr);
         }
     }
 

@@ -1,0 +1,5 @@
+- Ở phần manage transaction
+	=> thêm vẫn dữ nguyên
+	=> xoá theo id => Tạo ra một cái list
+	=> Cố gắng going như recurring transaction
+- Cố gắng xong phần recurring transaction.

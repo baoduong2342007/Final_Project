@@ -10,39 +10,48 @@ void particular_data(Trie &data , string name){
     cout << "[1] Insert\n";
     cout << "[2] Delete\n";
     separate();
+    //
     int t; string s;
     t = input_int(0 , 2);
     if (t == 0) return;
+    //
     if (t == 1){
         clear_screen();
         separate();
         cout << "Insert : " << name << "\n";
         separate();
+        //
         cout << "- Name :\n";
         s = input_string();
+        //
         if (data.exist(s) == true){
             cout << "=> This " << name << " already exists\n";
+            cout << "=> Failed\n";
         }
         else{
             cout << "=> Successful\n";
             data.ins(s);
         }
         pause();
-        return;
     }
+    //
     if (t == 2){
         clear_screen();
         separate();
         cout << "Delete : " << name << "\n";
         separate();
+        //
         cout << "- Name :\n";
         s = input_string();
+        //
         if (data.exist(s) == false){
-            cout << "This " << name << " does not exist => Failed\n";
+            cout << "=> This " << name << " does not exist\n";
+            cout << "=> Failed\n";
         }
         else{
             if (data.get_id(s)->cnt_transaction > 0){
-                cout << "=> There exist transactions have this " << name << " => Failed\n";
+                cout << "=> There exist transactions have this " << name << "\n";
+                cout << "=> Failed\n";
             }
             else{
                 cout << "=> Successful\n";
@@ -50,7 +59,6 @@ void particular_data(Trie &data , string name){
             }
         }
         pause();
-        return;
     }
 }
 
