@@ -52,7 +52,6 @@ RecurringTransaction input_recurring(){
     separate(); cout << "- End date :\n";
     Date end_d = input_date(true);
     if (end_d.day == 0) {
-        // Fix: Dung constructor Date(...) thay vi { ... }
         X.end_date = Date(31, 12, 9999);
         cout << "=> Set to Indefinite\n";
     } else X.end_date = end_d;

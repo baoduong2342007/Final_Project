@@ -7,7 +7,7 @@ void read_string(ifstream &fin , string &s){
     int n;
     fin.read((char*)&n , sizeof(int));
     s.clear();
-    if (fin && n > 0){ // Check stream state
+    if (fin && n > 0){
         s.resize(n);
         fin.read((char*)&s[0] , n * sizeof(char));
     }
