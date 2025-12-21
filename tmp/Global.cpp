@@ -7,8 +7,8 @@ Trie wallet;
 Trie income;
 Trie expense;
 
-void separate(){ cout << "==========================================\n"; }
-void big_separate(){ cout << "====================================================================\n"; }
+void separate(){ cout << YELLOW << "==========================================\n" << BLUE; }
+void big_separate(){ cout << YELLOW << "====================================================================\n" << BLUE; }
 void clear_screen(){
     #ifdef _WIN32
         system("cls");
@@ -17,7 +17,7 @@ void clear_screen(){
     #endif
 }
 void pause() {
-    cout << "=> Type enter to continue...\n";
+    cout << GREY << "=> Type enter to continue...\n" << BLUE;
     cin.get();
 }
 
@@ -45,11 +45,11 @@ long long get_total_balance() {
 }
 
 void show_dashboard() {
-    cout << "                DASHBOARD                \n";
+    cout << CYAN << "                DASHBOARD                \n";
     separate();
-    cout << " TOTAL BALANCE: " << get_total_balance() << "\n";
+    cout << CYAN << " TOTAL BALANCE: " << get_total_balance() << "\n";
     separate();
-    cout << " WALLET BALANCES:\n";
+    cout << CYAN << " WALLET BALANCES:\n";
     Dynamic_array<string> w_names = wallet.get_arr_string();
     Dynamic_array<Trie_node*> w_ids = wallet.get_arr_id();
 
@@ -59,6 +59,7 @@ void show_dashboard() {
             cout << " - " << w_names.get_val(i) << ": " << get_wallet_balance(w_ids.get_val(i)) << "\n";
         }
     }
+    cout << BLUE;
 }
 
 void resetInputStream() {
@@ -69,18 +70,18 @@ void resetInputStream() {
 int input_int(int l , int r){
     int t;
     while (true){
-        cout << ">> Enter : ";
+        cout << GREY << ">> Enter : " << BLUE;
         if (cin >> t){
             if (l <= t && t <= r){ resetInputStream(); return t; }
-            else { resetInputStream(); cout << "Invalid (" << l << "-" << r << ")\n"; }
-        } else { resetInputStream(); cout << "Invalid input!\n"; }
+            else { resetInputStream(); cout << RED << "Invalid (" << l << "-" << r << ")\n"; }
+        } else { resetInputStream(); cout << RED << "Invalid input!\n"; }
     }
 }
 
 long long input_long_long(long long x){
     long long t;
     while (true){
-        cout << ">> Enter : ";
+        cout << GREY << ">> Enter : " << BLUE;
         if (cin >> t){
             if (t >= x){ resetInputStream(); return t; }
             else { resetInputStream(); cout << "Invalid (>= " << x << ")\n"; }
@@ -89,7 +90,7 @@ long long input_long_long(long long x){
 }
 
 string input_string(){
-    cout << ">> Enter : ";
+    cout << GREY << ">> Enter : " << BLUE;
     string s; getline(cin , s);
     return s;
 }
@@ -97,7 +98,7 @@ string input_string(){
 Date input_date(bool allow_empty){
     string s; Date X;
     while (true){
-        cout << (allow_empty ? ">> Enter (dd/mm/yyyy) or Enter to skip: " : ">> Enter (dd/mm/yyyy): ");
+        cout << GREY << (allow_empty ? ">> Enter (dd/mm/yyyy) or Enter to skip: " : ">> Enter (dd/mm/yyyy): ") << BLUE;
         s.clear(); getline(cin , s);
 
         if (allow_empty && s.empty()) return Date(); // Tra ve ngay 0/0/0
@@ -116,7 +117,7 @@ Date input_date(bool allow_empty){
             X.year=0; for (int i=y+1; i<n; i++) if(isdigit(s[i])) X.year=X.year*10+(s[i]-'0'); else check=false;
         }
         if (check && valid_date(X)) return X;
-        cout << "=> Invalid date!\n";
+        cout << RED << "=> Invalid date!\n" << BLUE;
     }
 }
 
