@@ -9,7 +9,7 @@ void manage_statistics() {
     while (true) {
         clear_screen();
         separate();
-        cout << "STATISTICS MENU\n";
+        cout << CYAN << "STATISTICS MENU\n";
         separate();
         cout << "[0] Back\n";
         cout << "[1] Income / Expense summary (Date Range)\n";
