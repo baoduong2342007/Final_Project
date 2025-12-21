@@ -25,7 +25,7 @@ void print_transaction_short(Transaction& t) {
 
 // 1. Summary Range
 void stats_range_summary() {
-    clear_screen(); separate(); cout << "SUMMARY BY DATE RANGE\n"; separate();
+    clear_screen(); separate(); cout << CYAN << "SUMMARY BY DATE RANGE\n"; separate();
     cout << "From Date:\n"; Date from = input_date();
     cout << "To Date:\n";   Date to = input_date();
 
@@ -40,15 +40,15 @@ void stats_range_summary() {
     separate();
     cout << "REPORT (" << from.day << "/" << from.month << "/" << from.year
          << " - " << to.day << "/" << to.month << "/" << to.year << ")\n";
-    cout << "Total Income : " << inc << "\n";
-    cout << "Total Expense: " << exp << "\n";
-    cout << "Net Balance  : " << inc - exp << "\n";
+    cout << GREEN << "Total Income : " << inc << "\n";
+    cout << RED << "Total Expense: " << exp << "\n";
+    cout << MAGENTA << "Net Balance  : " << inc - exp << "\n" << BLUE;
     pause();
 }
 
 // 2. Yearly Overview
 void stats_yearly_overview() {
-    clear_screen(); separate(); cout << "YEARLY OVERVIEW\n"; separate();
+    clear_screen(); separate(); cout << CYAN << "YEARLY OVERVIEW\n"; separate();
     cout << "Enter Year: "; int year = input_int(1900, 3000);
 
     long long inc = 0, exp = 0;
@@ -61,16 +61,16 @@ void stats_yearly_overview() {
     }
     separate();
     cout << "STATISTICS FOR YEAR " << year << "\n";
-    cout << "Total Income : " << inc << "\n";
-    cout << "Total Expense: " << exp << "\n";
-    cout << "Net Balance  : " << inc - exp << "\n";
+    cout << GREEN << "Total Income : " << inc << "\n";
+    cout << RED << "Total Expense: " << exp << "\n";
+    cout << MAGENTA << "Net Balance  : " << inc - exp << "\n" << BLUE;
     pause();
 }
 
 // 3 & 4. By Source/Category
 void stats_by_source(int source_type) {
     clear_screen(); separate();
-    cout << (source_type == 1 ? "INCOME BY SOURCE" : "EXPENSE BY CATEGORY") << "\n";
+    cout << CYAN << (source_type == 1 ? "INCOME BY SOURCE" : "EXPENSE BY CATEGORY") << "\n";
     separate();
     cout << "Enter Year: "; int year = input_int(1900, 3000);
 
@@ -116,7 +116,7 @@ void stats_by_source(int source_type) {
 
 // 5. List valuable
 void stats_list_valuable() {
-    clear_screen(); separate(); cout << "LIST HIGH VALUE TRANSACTIONS\n"; separate();
+    clear_screen(); separate(); cout << CYAN << "LIST HIGH VALUE TRANSACTIONS\n"; separate();
     cout << "Minimum Amount: "; long long limit = input_long_long(0);
 
     separate();
@@ -135,7 +135,7 @@ void stats_list_valuable() {
 
 // 6. Peak / Bottom
 void stats_peak_bottom() {
-    clear_screen(); separate(); cout << "PEAK / BOTTOM ANALYSIS\n"; separate();
+    clear_screen(); separate(); cout << CYAN << "PEAK / BOTTOM ANALYSIS\n"; separate();
     cout << "Type: [1] Income   [2] Expense\n"; int type = input_int(1, 2);
     cout << "Mode: [1] Peak (Max) [2] Bottom (Min)\n"; int mode = input_int(1, 2);
 
@@ -193,7 +193,7 @@ void stats_peak_bottom() {
 
 // 7. Most valuable in range
 void stats_most_valuable_in_range() {
-    clear_screen(); separate(); cout << "HIGHEST SINGLE TRANSACTION\n"; separate();
+    clear_screen(); separate(); cout << CYAN << "HIGHEST SINGLE TRANSACTION\n"; separate();
     cout << "From Date:\n"; Date from = input_date();
     cout << "To Date:\n";   Date to = input_date();
     cout << "Type: [1] Income   [2] Expense\n"; int type = input_int(1, 2);
