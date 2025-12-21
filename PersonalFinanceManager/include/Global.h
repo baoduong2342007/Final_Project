@@ -2,11 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <iomanip>
+#include <cmath>
 #include "Dynamic_array.h"
 #include "Transaction.h"
 #include "RecurringTransaction.h"
 #include "Trie.h"
 #include "Date.h"
+
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
@@ -25,14 +28,15 @@ extern Trie wallet;
 extern Trie income;
 extern Trie expense;
 
-// UI
 void separate();
 void big_separate();
 void clear_screen();
 void pause();
 void resetInputStream();
 
-// Input
+string format_money(long long money);
+string truncate_text(string s, int width);
+
 int input_int(int l , int r);
 long long input_long_long(long long x);
 string input_string();
@@ -40,7 +44,6 @@ Date input_date(bool allow_empty = false);
 
 void clear_all();
 
-// Dashboard
 long long get_wallet_balance(Trie_node* wallet_id);
 long long get_total_balance();
 void show_dashboard();

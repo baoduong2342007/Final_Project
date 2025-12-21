@@ -3,19 +3,57 @@
 
 using namespace std;
 
+void print_table_header() {
+    cout << YELLOW;
+    cout << left << setw(5) << "ID"
+         << setw(12) << "Date"
+         << setw(10) << "Type"
+         << setw(15) << "Category"
+         << right << setw(15) << "Amount"
+         << "   "
+         << left << setw(15) << "Wallet"
+         << setw(20) << "Desc" << "\n";
+    cout << string(95, '-') << "\n" << BLUE;
+}
+
+void print_table_row(int id, Transaction &t) {
+    string type = (t.source == 1) ? "Income" : "Expense";
+
+    string cat_name = "N/A";
+    if (t.source == 1 && t.source_id) cat_name = income.get_string(t.source_id);
+    else if (t.source == 2 && t.source_id) cat_name = expense.get_string(t.source_id);
+
+    string w_name = (t.wallet_id) ? wallet.get_string(t.wallet_id) : "N/A";
+
+    string date_str = to_string(t.date.day) + "/" + to_string(t.date.month) + "/" + to_string(t.date.year);
+
+    string color = (t.source == 1) ? GREEN : RED;
+
+    cout << left << setw(5) << id
+         << setw(12) << date_str
+         << setw(10) << type
+         << setw(15) << truncate_text(cat_name, 13)
+         << color << right << setw(15) << format_money(t.amount) << BLUE
+         << "   "
+         << left << setw(15) << truncate_text(w_name, 13)
+         << setw(20) << truncate_text(t.description, 18) << "\n";
+}
+
 void just_add_transaction(Transaction& X) {
     if (X.source_id == nullptr) return;
     if (X.wallet_id == nullptr) return;
     int pos = event.find_pos(X);
     if (pos == event.cur_n) return;
+
+    int insert_pos = event.cur_n;
     for (int i = 0; i < event.cur_n; i++) {
         Transaction Y = event.get_val(i);
         if (X < Y) {
-            pos = i;
+            insert_pos = i;
             break;
         }
     }
-    event.ins(pos, X);
+    event.ins(insert_pos, X);
     X.source_id->cnt_transaction++;
     X.wallet_id->cnt_transaction++;
 }
@@ -26,12 +64,8 @@ void add_transaction(Transaction& X) {
     if (X.source_id == nullptr) {
         check = false;
         cout << RED;
-        if (X.source == 1) {
-            cout << "=> This income does not exist\n";
-        }
-        else {
-            cout << "=> This expense does not exist\n";
-        }
+        if (X.source == 1) cout << "=> This income source does not exist\n";
+        else cout << "=> This expense category does not exist\n";
         cout << BLUE;
     }
 
@@ -46,18 +80,18 @@ void add_transaction(Transaction& X) {
         cout << RED << "=> This transaction already exists\n" << BLUE;
     }
 
-    if (check == false) {
+    if (!check) {
         cout << RED << "=> Failed\n" << BLUE;
-    }
-    else {
+    } else {
+        int insert_pos = event.cur_n;
         for (int i = 0; i < event.cur_n; i++) {
             Transaction Y = event.get_val(i);
             if (X < Y) {
-                pos = i;
+                insert_pos = i;
                 break;
             }
         }
-        event.ins(pos, X);
+        event.ins(insert_pos, X);
         X.source_id->cnt_transaction++;
         X.wallet_id->cnt_transaction++;
         cout << GREEN << "=> Successful\n" << BLUE;
@@ -98,32 +132,16 @@ Transaction input_transaction() {
 
 void output_transaction(Transaction X) {
     string s;
-
-    cout << "- Category type (1 -> Income , 2 -> Expense) :\n";
-    cout << ">> " << X.source << "\n";
-    separate();
-
-    cout << "- Date (day/month/year) :\n";
-    cout << ">> "; output_date(X.date);
-    separate();
+    cout << "- Type: " << ((X.source == 1) ? "Income" : "Expense") << "\n";
+    cout << "- Date: " << X.date.day << "/" << X.date.month << "/" << X.date.year << "\n";
 
     s = (X.source == 1) ? "Income" : "Expense";
-    cout << "- " << s << " name :\n";
-    s = (X.source == 1) ? income.get_string(X.source_id) : expense.get_string(X.source_id);
-    cout << ">> " << s << "\n";
-    separate();
+    string cat = (X.source == 1) ? income.get_string(X.source_id) : expense.get_string(X.source_id);
+    cout << "- " << s << ": " << cat << "\n";
 
-    cout << "- Amount :\n";
-    cout << ">> " << X.amount << "\n";
-    separate();
-
-    cout << "- Wallet name :\n";
-    s = wallet.get_string(X.wallet_id);
-    cout << ">> " << s << "\n";
-    separate();
-
-    cout << "- Description :\n";
-    cout << ">> " << X.description << "\n";
+    cout << "- Amount: " << format_money(X.amount) << "\n";
+    cout << "- Wallet: " << wallet.get_string(X.wallet_id) << "\n";
+    cout << "- Desc: " << X.description << "\n";
 }
 
 void manage_transaction() {
@@ -144,15 +162,9 @@ void manage_transaction() {
 
         if (t == 1) {
             clear_screen();
-            separate();
-            cout << CYAN << "Add transaction\n";
-            separate();
-            cout << "[0] Back\n";
-            cout << "[1] Continue\n";
-            separate();
-
-            int t = input_int(0, 1);
-            if (t == 1) {
+            separate(); cout << CYAN << "Add transaction\n"; separate();
+            cout << "[0] Back\n[1] Continue\n";
+            if (input_int(0, 1) == 1) {
                 Transaction X = input_transaction();
                 add_transaction(X);
                 pause();
@@ -161,29 +173,22 @@ void manage_transaction() {
 
         if (t == 2) {
             clear_screen();
-            separate();
-            cout << CYAN << "Delete transaction\n";
-            separate();
-            cout << "[0] Back\n";
-            cout << "[1] Continue\n";
-            separate();
-
-            int t = input_int(0, 1);
-            if (t == 1) {
+            separate(); cout << CYAN << "Delete transaction\n"; separate();
+            cout << "[0] Back\n[1] Continue\n";
+            if (input_int(0, 1) == 1) {
                 if (event.cur_n == 0) {
-                    cout << RED << "=> There is no transaction\n";
-                    cout << "=> Failed\n" << BLUE;
-                }
-                else {
-                    cout << "- ID of transaction (ID from 0 to " << event.cur_n - 1 << ") :\n";
+                    cout << RED << "=> No transactions to delete\n" << BLUE;
+                } else {
+                    cout << "- Enter ID to delete (0-" << event.cur_n - 1 << "):\n";
                     int id = input_int(0, INT_MAX);
                     if (0 <= id && id < event.cur_n) {
+                        Transaction& tmp = event.get_val(id);
+                        if(tmp.source_id) tmp.source_id->cnt_transaction--;
+                        if(tmp.wallet_id) tmp.wallet_id->cnt_transaction--;
                         event.del(id);
                         cout << GREEN << "=> Successful\n" << BLUE;
-                    }
-                    else {
-                        cout << RED << "=> Invalid input!\n";
-                        cout << "=> Failed\n" << BLUE;
+                    } else {
+                        cout << RED << "=> Invalid ID!\n" << BLUE;
                     }
                 }
                 pause();
@@ -193,12 +198,13 @@ void manage_transaction() {
         if (t == 3) {
             clear_screen();
             separate();
-            cout << CYAN << "List transaction (by date)\n";
+            cout << CYAN << "List Transaction (By Date)\n" << BLUE;
             separate();
-            cout << "- Date (day/month/year) :\n";
-
+            cout << "- Filter Date:\n";
             Date date = input_date();
             big_separate();
+
+            print_table_header();
 
             int l = 0, r = event.cur_n - 1, st = -1;
             while (l <= r) {
@@ -206,38 +212,38 @@ void manage_transaction() {
                 if (compare_date(event.get_val(mid).date, date) >= 0) {
                     r = mid - 1;
                     if (same_date(event.get_val(mid).date, date)) st = l;
-                }
-                else {
+                } else {
                     l = mid + 1;
                 }
             }
 
+            bool found = false;
             if (st != -1) {
+                while(st > 0 && same_date(event.get_val(st-1).date, date)) st--;
+
                 while (st < event.cur_n && same_date(event.get_val(st).date, date)) {
-                    cout << "- ID : " << st << "\n";
-                    output_transaction(event.get_val(st));
-                    big_separate();
+                    print_table_row(st, event.get_val(st));
                     st++;
+                    found = true;
                 }
             }
-            else {
-                cout << RED << "There is no transaction in ";
-                output_date(date);
-                cout << BLUE;
+
+            if(!found) {
+                cout << RED << "   (No transactions found on this date)\n" << BLUE;
             }
             pause();
         }
 
         if (t == 4){
+            clear_screen();
+            cout << CYAN << "ALL TRANSACTIONS\n" << BLUE;
+
             if (event.cur_n == 0){
-                cout << RED << "There is no transaction\n";
-                cout << BLUE;
-            }
-            else{
+                cout << RED << "=> Empty\n" << BLUE;
+            } else {
+                print_table_header();
                 for (int i = 0 ; i < event.cur_n ; i++){
-                    cout << "- ID : " << i << "\n";
-                    output_transaction(event.get_val(i));
-                    big_separate();
+                    print_table_row(i, event.get_val(i));
                 }
             }
             pause();
