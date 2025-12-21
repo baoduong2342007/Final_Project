@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "Global.h"
 #include "Data_Persistence.h"
 #include "Master_Data_Management.h"
@@ -11,9 +10,10 @@ using namespace std;
 int main(){
     load();
     apply_recurring_transaction();
+    cout << BLUE;
     while (true){
         clear_screen();
-        separate(); cout << "PERSONAL FINANCE MANAGER \n";
+        separate(); cout << CYAN << "PERSONAL FINANCE MANAGER \n" << BLUE;
         show_dashboard();
         separate();
         cout << "[0] Exit & Save\n";
@@ -31,5 +31,6 @@ int main(){
     }
     save();
     clear_all();
+    cout << RESET;
     return 0;
 }
