@@ -1,5 +1,5 @@
 #pragma once
-#include <bits/stdc++.h>
+#include <string>
 #include "Dynamic_array.h"
 using namespace std;
 
