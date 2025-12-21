@@ -23,7 +23,7 @@ void apply_recurring_transaction() {
             tmp.wallet_id = X.wallet_id;
             tmp.amount = X.amount;
             tmp.description = X.description;
-
+            output_date(X.start_date);
             if (valid_date(tmp.date)) just_add_transaction(tmp);
             X.start_date = next_month(X.start_date);
         }

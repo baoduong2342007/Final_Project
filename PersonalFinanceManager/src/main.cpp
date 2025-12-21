@@ -28,6 +28,7 @@ int main(){
         if (t == 2) manage_transaction();
         if (t == 3) manage_recurring();
         if (t == 4) manage_statistics();
+        apply_recurring_transaction();
     }
     save();
     clear_all();

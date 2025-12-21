@@ -43,17 +43,15 @@ void just_add_transaction(Transaction& X) {
     if (X.source_id == nullptr) return;
     if (X.wallet_id == nullptr) return;
     int pos = event.find_pos(X);
-    if (pos == event.cur_n) return;
-
-    int insert_pos = event.cur_n;
+    if (pos != event.cur_n) return;
     for (int i = 0; i < event.cur_n; i++) {
         Transaction Y = event.get_val(i);
         if (X < Y) {
-            insert_pos = i;
+            pos = i;
             break;
         }
     }
-    event.ins(insert_pos, X);
+    event.ins(pos, X);
     X.source_id->cnt_transaction++;
     X.wallet_id->cnt_transaction++;
 }
@@ -211,7 +209,7 @@ void manage_transaction() {
                 int mid = (l + r) / 2;
                 if (compare_date(event.get_val(mid).date, date) >= 0) {
                     r = mid - 1;
-                    if (same_date(event.get_val(mid).date, date)) st = l;
+                    if (same_date(event.get_val(mid).date, date)) st = mid;
                 } else {
                     l = mid + 1;
                 }
@@ -220,7 +218,6 @@ void manage_transaction() {
             bool found = false;
             if (st != -1) {
                 while(st > 0 && same_date(event.get_val(st-1).date, date)) st--;
-
                 while (st < event.cur_n && same_date(event.get_val(st).date, date)) {
                     print_table_row(st, event.get_val(st));
                     st++;

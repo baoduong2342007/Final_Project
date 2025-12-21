@@ -69,7 +69,7 @@ void show_dashboard() {
 
     long long total = get_total_balance();
     string color = (total >= 0) ? GREEN : RED;
-    cout << " TOTAL ASSETS: " << color << format_money(total) << " VND" << BLUE << "\n";
+    cout << " TOTAL ASSETS: " << color << format_money(total) << BLUE << "\n";
 
     separate();
 

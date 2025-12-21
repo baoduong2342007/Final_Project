@@ -122,9 +122,9 @@ void manage_master_data() {
         cout << CYAN << "Manage Master Data\n" << BLUE;
         separate();
         cout << "[0] Back\n";
-        cout << "[1] Wallets (Bank, Cash...)\n";
-        cout << "[2] Income Sources (Salary, Bonus...)\n";
-        cout << "[3] Expense Categories (Food, Rent...)\n";
+        cout << "[1] Wallets\n";
+        cout << "[2] Income Sources\n";
+        cout << "[3] Expense Categories\n";
         separate();
         int t = input_int(0, 3);
         if (t == 0) break;
