@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "Data_Persistence.h"
 
 using namespace std;
@@ -7,7 +6,7 @@ void read_string(ifstream &fin , string &s){
     int n;
     fin.read((char*)&n , sizeof(int));
     s.clear();
-    if (fin && n > 0){
+    if (fin && n > 0){ // Check stream state
         s.resize(n);
         fin.read((char*)&s[0] , n * sizeof(char));
     }
