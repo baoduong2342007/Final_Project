@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <utility>
+#include <algorithm>
 #include "Dynamic_array.h"
 using namespace std;
 
