@@ -1,282 +1,228 @@
-#include <iostream>
 #include "Statistics.h"
-#include "Global.h"
 
 using namespace std;
 
-// helpers
-
-bool Statistics::inRange(Date d, Date from, Date to) {
-    if (compare_date(from, to) > 0) return false;
-    return compare_date(from, d) <= 0 && compare_date(d, to) <= 0;
-}
-static void printSummary(long long income, long long expense) {
-    cout << "Total income : " << income << "\n";
-    cout << "Total expense: " << expense << "\n";
-    cout << "Net balance  : " << income - expense << "\n";
+// --- HELPERS ---
+bool in_range(Date d, Date from, Date to) {
+    return (compare_date(d, from) >= 0 && compare_date(d, to) <= 0);
 }
 
-// basic summary
+void print_transaction_short(Transaction& t) {
+    cout << "   - "; output_date(t.date);
+    cout << " | " << t.amount;
 
-void Statistics::incomeExpenseSummary(Date from, Date to) {
-    long long income = 0, expense = 0;
+    string w_name = "Unknown";
+    if(t.wallet_id) w_name = wallet.get_string(t.wallet_id);
+    cout << " | Wallet: " << w_name;
+
+    string s_name = "Unknown";
+    if(t.source == 1 && t.source_id) s_name = income.get_string(t.source_id);
+    else if(t.source == 2 && t.source_id) s_name = expense.get_string(t.source_id);
+    cout << " | Source: " << s_name << "\n";
+}
+
+// --- FEATURES ---
+
+// 1. Summary Range
+void stats_range_summary() {
+    clear_screen(); separate(); cout << CYAN << "SUMMARY BY DATE RANGE\n"; separate();
+    cout << "From Date:\n"; Date from = input_date();
+    cout << "To Date:\n";   Date to = input_date();
+
+    long long inc = 0, exp = 0;
     for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
-        if (inRange(t.date, from, to)) {
-            if (t.source == 1) income += t.amount;
-            else expense += t.amount;
+        Transaction& t = event.get_val(i);
+        if (in_range(t.date, from, to)) {
+            if (t.source == 1) inc += t.amount;
+            else exp += t.amount;
         }
     }
-    cout << "Statistics from ";
-    output_date(from);
-    cout << "to ";
-    output_date(to);
-    printSummary(income, expense);
+    separate();
+    cout << "REPORT (" << from.day << "/" << from.month << "/" << from.year
+         << " - " << to.day << "/" << to.month << "/" << to.year << ")\n";
+    cout << GREEN << "Total Income : " << inc << "\n";
+    cout << RED << "Total Expense: " << exp << "\n";
+    cout << MAGENTA << "Net Balance  : " << inc - exp << "\n" << BLUE;
+    pause();
 }
-// yearly overview
-void Statistics::yearlyOverview(int year) {
-    long long income = 0, expense = 0;
+
+// 2. Yearly Overview
+void stats_yearly_overview() {
+    clear_screen(); separate(); cout << CYAN << "YEARLY OVERVIEW\n"; separate();
+    cout << "Enter Year: "; int year = input_int(1900, 3000);
+
+    long long inc = 0, exp = 0;
     for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
+        Transaction& t = event.get_val(i);
         if (t.date.year == year) {
-            if (t.source == 1) income += t.amount;
-            else expense += t.amount;
+            if (t.source == 1) inc += t.amount;
+            else exp += t.amount;
         }
     }
-    cout << "Statistics for year " << year << ":\n";
-    printSummary(income, expense);
+    separate();
+    cout << "STATISTICS FOR YEAR " << year << "\n";
+    cout << GREEN << "Total Income : " << inc << "\n";
+    cout << RED << "Total Expense: " << exp << "\n";
+    cout << MAGENTA << "Net Balance  : " << inc - exp << "\n" << BLUE;
+    pause();
 }
-void Statistics::incomeBySource(int year) {
-    Dynamic_array<Trie_node*> sources = income.get_arr_id();
-    int n = sources.cur_n;
+
+// 3 & 4. By Source/Category
+void stats_by_source(int source_type) {
+    clear_screen(); separate();
+    cout << CYAN << (source_type == 1 ? "INCOME BY SOURCE" : "EXPENSE BY CATEGORY") << "\n";
+    separate();
+    cout << "Enter Year: "; int year = input_int(1900, 3000);
+
+    Trie* data_trie = (source_type == 1) ? &income : &expense;
+
+    Dynamic_array<Trie_node*> nodes = data_trie->get_arr_id();
+    int n = nodes.cur_n;
+
     if (n == 0) {
-        cout << "No income sources\n";
-        return;
+        cout << "=> No categories found!\n";
+        nodes.clear_all(); pause(); return;
     }
-    long long* sum = new long long[n];
-    for (int i = 0; i < n; i++) sum[i] = 0;
-    // accumulate
+
+    long long* sums = new long long[n];
+    for(int i=0; i<n; i++) sums[i] = 0;
+
     for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i); // loop i for transaction list, j for income list
-        if (t.source == 1 && t.date.year == year) {
-            for (int j = 0; j < n; j++) {
-                if (sources.get_val(j) == t.source_id) {
-                    sum[j] += t.amount;
-                    break;
-                }
+        Transaction& t = event.get_val(i);
+        if (t.source == source_type && t.date.year == year && t.source_id != nullptr) {
+            if(t.source_id->id >= 0 && t.source_id->id < n) {
+                sums[t.source_id->id] += t.amount;
             }
         }
     }
-    cout << "Income by source in year " << year << ":\n";
+
+    separate();
+    cout << "BREAKDOWN FOR YEAR " << year << ":\n";
+    Dynamic_array<string> names = data_trie->get_arr_string();
+    bool has_data = false;
     for (int i = 0; i < n; i++) {
-        if (sum[i] > 0) {
-            cout << "- "
-                << income.get_string(sources.get_val(i))
-                << " : " << sum[i] << "\n";
+        if (sums[i] > 0) {
+            cout << "- " << names.get_val(i) << ": " << sums[i] << "\n";
+            has_data = true;
         }
     }
-    delete[] sum;
-    sources.clear_all();
+    if(!has_data) cout << "(No transactions recorded)\n";
+
+    delete[] sums;
+    nodes.clear_all();
+    names.clear_all();
+    pause();
 }
-void Statistics::expenseBySource(int year) {
-    Dynamic_array<Trie_node*> sources = expense.get_arr_id();
-    int n = sources.cur_n;
-    if (n == 0) {
-        cout << "No expense categories\n";
-        return;
-    }
-    long long* sum = new long long[n];
-    for (int i = 0; i < n; i++) sum[i] = 0;
-    // accumulate 
+
+// 5. List valuable
+void stats_list_valuable() {
+    clear_screen(); separate(); cout << CYAN << "LIST HIGH VALUE TRANSACTIONS\n"; separate();
+    cout << "Minimum Amount: "; long long limit = input_long_long(0);
+
+    separate();
+    cout << "Transactions >= " << limit << ":\n";
+    int cnt = 0;
     for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
-        if (t.source == 2 && t.date.year == year) {
-            for (int j = 0; j < n; j++) {
-                if (sources.get_val(j) == t.source_id) {
-                    sum[j] += t.amount;
-                    break;
+        Transaction& t = event.get_val(i);
+        if (t.amount >= limit) {
+            print_transaction_short(t);
+            cnt++;
+        }
+    }
+    if (cnt == 0) cout << "(None found)\n";
+    pause();
+}
+
+// 6. Peak / Bottom
+void stats_peak_bottom() {
+    clear_screen(); separate(); cout << CYAN << "PEAK / BOTTOM ANALYSIS\n"; separate();
+    cout << "Type: [1] Income   [2] Expense\n"; int type = input_int(1, 2);
+    cout << "Mode: [1] Peak (Max) [2] Bottom (Min)\n"; int mode = input_int(1, 2);
+
+    long long (*cache)[13] = new long long[3001][13];
+
+    // Init 0
+    for(int y=0; y<=3000; y++)
+        for(int m=0; m<=12; m++) cache[y][m] = 0;
+
+    bool has_data = false;
+    for(int i=0; i<event.cur_n; i++){
+        Transaction& t = event.get_val(i);
+        if(t.source == type && t.date.year >= 1900 && t.date.year <= 3000){
+            cache[t.date.year][t.date.month] += t.amount;
+            has_data = true;
+        }
+    }
+
+    if(!has_data){
+        cout << "=> No data available.\n";
+        delete[] cache; pause(); return;
+    }
+
+    long long target_val = (mode == 1) ? -1 : LLONG_MAX;
+    int res_m = 0, res_y = 0;
+
+    for(int y=1900; y<=3000; y++){
+        for(int m=1; m<=12; m++){
+            long long val = cache[y][m];
+            if(val > 0) {
+                if(mode == 1) { // Peak
+                    if(val > target_val) { target_val = val; res_y = y; res_m = m; }
+                } else { // Bottom
+                    if(val < target_val) { target_val = val; res_y = y; res_m = m; }
                 }
             }
         }
     }
-    cout << "Expense by category in year " << year << ":\n";
-    for (int i = 0; i < n; i++) {
-        if (sum[i] > 0) {
-            cout << "- "
-                << expense.get_string(sources.get_val(i))
-                << " : " << sum[i] << "\n";
-        }
+
+    separate();
+    string s_type = (type == 1) ? "Income" : "Expense";
+    string s_mode = (mode == 1) ? "Peak (Highest)" : "Bottom (Lowest)";
+
+    if(res_y != 0) {
+        cout << s_mode << " " << s_type << " Month: "
+             << res_m << "/" << res_y << "\n";
+        cout << "Total Amount: " << target_val << "\n";
+    } else {
+        cout << "=> No transactions found.\n";
     }
-    delete[] sum;
-    sources.clear_all();
+
+    delete[] cache;
+    pause();
 }
 
-// peak/bottom of whole list
-void Statistics::peakIncomeMonth() {
-    long long best = -1;
-    int bestY = 0, bestM = 0;
-    for (int y = 1900; y <= 2100; y++) {
-        for (int m = 1; m <= 12; m++) {
-            long long sum = 0;
-            bool exist = false;
-            for (int i = 0; i < event.cur_n; i++) {
-                Transaction t = event.get_val(i);
-                if (t.date.year == y && t.date.month == m) {
-                    exist = true;
-                    if (t.source == 1) sum += t.amount;
-                }
-            }
-            if (exist && sum > best) {
-                best = sum;
-                bestY = y;
-                bestM = m;
-            }
-        }
-    }
-    // too many loops
-    if (best >= 0)
-        cout << "Peak income month: " << bestM << "/" << bestY
-        << " with amount " << best << "\n";
-    else
-        cout << "No income data\n";
-}
-void Statistics::bottomIncomeMonth() {
-    long long worst = -1;
-    int worstY = 0, worstM = 0;
-    for (int y = 1900; y <= 2100; y++) {
-        for (int m = 1; m <= 12; m++) {
-            long long sum = 0;
-            bool exist = false;
+// 7. Most valuable in range
+void stats_most_valuable_in_range() {
+    clear_screen(); separate(); cout << CYAN << "HIGHEST SINGLE TRANSACTION\n"; separate();
+    cout << "From Date:\n"; Date from = input_date();
+    cout << "To Date:\n";   Date to = input_date();
+    cout << "Type: [1] Income   [2] Expense\n"; int type = input_int(1, 2);
 
-            for (int i = 0; i < event.cur_n; i++) {
-                Transaction t = event.get_val(i);
-                if (t.date.year == y && t.date.month == m) {
-                    exist = true;
-                    if (t.source == 1) sum += t.amount;
-                }
-            }
-
-            if (exist && (worst == -1 || sum < worst)) {
-                worst = sum;
-                worstY = y;
-                worstM = m;
-            }
-        }
-    }
-    if (worst >= 0)
-        cout << "Bottom income month: " << worstM << "/" << worstY
-        << " with amount " << worst << "\n";
-    else
-        cout << "No income data\n";
-}
-void Statistics::peakExpenseMonth() {
-    long long best = -1;
-    int bestY = 0, bestM = 0;
-    for (int y = 1900; y <= 2100; y++) {
-        for (int m = 1; m <= 12; m++) {
-            long long sum = 0;
-            bool exist = false;
-
-            for (int i = 0; i < event.cur_n; i++) {
-                Transaction t = event.get_val(i);
-                if (t.date.year == y && t.date.month == m) {
-                    exist = true;
-                    if (t.source == 2) sum += t.amount;
-                }
-            }
-
-            if (exist && sum > best) {
-                best = sum;
-                bestY = y;
-                bestM = m;
-            }
-        }
-    }
-    if (best >= 0)
-        cout << "Peak expense month: " << bestM << "/" << bestY
-        << " with amount " << best << "\n";
-    else
-        cout << "No expense data\n";
-}
-void Statistics::bottomExpenseMonth() {
-    long long worst = -1;
-    int worstY = 0, worstM = 0;
-    for (int y = 1900; y <= 2100; y++) {
-        for (int m = 1; m <= 12; m++) {
-            long long sum = 0;
-            bool exist = false;
-
-            for (int i = 0; i < event.cur_n; i++) {
-                Transaction t = event.get_val(i);
-                if (t.date.year == y && t.date.month == m) {
-                    exist = true;
-                    if (t.source == 2) sum += t.amount;
-                }
-            }
-            if (exist && (worst == -1 || sum < worst)) {
-                worst = sum;
-                worstY = y;
-                worstM = m;
-            }
-        }
-    }
-    if (worst >= 0)
-        cout << "Bottom expense month: " << worstM << "/" << worstY
-        << " with amount " << worst << "\n";
-    else
-        cout << "No expense data\n";
-}
-// valuable transactions
-Transaction Statistics::mostValuableIncome(Date from, Date to) {
-    Transaction best;
-    long long maxAmount = -1;
-    for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
-        if (t.source == 1 && inRange(t.date, from, to)) {
-            if (t.amount > maxAmount) {
-                maxAmount = t.amount;
-                best = t;
-            }
-        }
-    }
-    return best; // amount == 0 if none found
-}
-Transaction Statistics::mostValuableExpense(Date from, Date to) {
-    Transaction best;
-    long long maxAmount = -1;
-    for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
-        if (t.source == 2 && inRange(t.date, from, to)) {
-            if (t.amount > maxAmount) {
-                maxAmount = t.amount;
-                best = t;
-            }
-        }
-    }
-    return best; // amount == 0 if none found
-}
-void Statistics::list_valuable_transactions(long long amount) {
-    bool found = false;
-    cout << "Transactions with amount at least " << amount << ":\n";
+    long long max_val = -1;
+    int idx = -1;
 
     for (int i = 0; i < event.cur_n; i++) {
-        Transaction t = event.get_val(i);
-        if (t.amount >= amount) {
-            found = true;
-            cout << "----------------------------------\n";
-            cout << (t.source == 1 ? "Income\n" : "Expense\n");
-            output_date(t.date);
-            cout << "Amount      : " << t.amount << "\n";
-            cout << "Wallet      : " << wallet.get_string(t.wallet_id) << "\n";
-            if (t.source == 1)
-                cout << "Source      : " << income.get_string(t.source_id) << "\n";
-            else
-                cout << "Category    : " << expense.get_string(t.source_id) << "\n";
-            cout << "Description : " << t.description << "\n";
+        Transaction& t = event.get_val(i);
+        if (t.source == type && in_range(t.date, from, to)) {
+            if (t.amount > max_val) {
+                max_val = t.amount;
+                idx = i;
+            }
         }
     }
-    if (!found) {
-        cout << "No transaction matches this condition.\n";
-    }
-}
 
+    separate();
+    if (idx != -1) {
+        cout << "Found Transaction:\n";
+        Transaction& res = event.get_val(idx);
+        output_date(res.date);
+        cout << "Amount: " << res.amount << "\n";
+        cout << "Wallet: " << (res.wallet_id ? wallet.get_string(res.wallet_id) : "N/A") << "\n";
+        string src = (type == 1) ? income.get_string(res.source_id) : expense.get_string(res.source_id);
+        cout << "Source: " << src << "\n";
+        cout << "Note  : " << res.description << "\n";
+    } else {
+        cout << "=> No transaction found in this range.\n";
+    }
+    pause();
+}

@@ -1,29 +1,23 @@
 #pragma once
+#include "Global.h"
 
-#include "Date.h"
-#include "Transaction.h"
+// Helper
+bool in_range(Date d, Date from, Date to);
 
-class Statistics {
-public:
-    // Check if date d is in [from, to]
-    bool inRange(Date d, Date from, Date to);
+// 1. Income / Expense summary (date range)
+void stats_range_summary();
 
-    // Total income / expense / net in a date range
-    void incomeExpenseSummary(Date from, Date to);
+// 2. Yearly overview
+void stats_yearly_overview();
 
-    // Overview of a year
-    void yearlyOverview(int year);
-    void incomeBySource(int year);
-    void expenseBySource(int year);
+// 3 & 4. List income/expense by source in a year
+void stats_by_source(int source_type); // 1 = Income, 2 = Expense
 
-    // Peak / bottom months
-    void peakIncomeMonth();
-    void bottomIncomeMonth();
-    void peakExpenseMonth();
-    void bottomExpenseMonth();
+// 5. List transactions with amount at least given amount
+void stats_list_valuable();
 
-    // Valuable transactions
-    Transaction mostValuableIncome(Date from, Date to);
-    Transaction mostValuableExpense(Date from, Date to);
-    void list_valuable_transactions(long long amount);
-};
+// 6. Peak / bottom of income / expense in history
+void stats_peak_bottom();
+
+// 7. Most valuable income / expense (date range)
+void stats_most_valuable_in_range();

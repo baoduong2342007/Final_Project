@@ -1,175 +1,115 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-
-#include "Recurring_Management.h"
 #include "Global.h"
+#include "Recurring_Management.h"
 #include "Transaction_Management.h"
-
+#include "Data_Persistence.h"
 using namespace std;
 
-// dates, help for monthly transactions
-bool month_passed(Date last, Date now) {
-    if (now.year > last.year) return true;
-    if (now.year == last.year && now.month > last.month) return true;
-    return false;
-}
 Date next_month(Date d) {
     d.month++;
-    if (d.month == 13) {
-        d.month = 1;
-        d.year++;
-    }
+    if (d.month == 13) { d.month = 1; d.year++; }
     return d;
 }
-bool after_end(Date d, Date end) {
-    if (end.year == 0) return false; // no end
-    return compare_date(d, end) > 0;
-}
-// auto generate transactions monthly
-void apply_recurring_transactions() {
+
+void apply_recurring_transaction() {
     Date now = current_date();
+    Dynamic_array<int> pos;
     for (int i = 0; i < auto_event.cur_n; i++) {
-        RecurringTransaction& R = auto_event.get_val(i);
-        while (month_passed(R.last_generated, now)) {
-            Date gen_date = next_month(R.last_generated);
-            // stop if passed end date
-            if (after_end(gen_date, R.end_date)) break;
-            Transaction X;
-            X.date = gen_date;
-            X.source = R.source;
-            X.source_id = R.source_id;
-            X.wallet_id = R.wallet_id;
-            X.amount = R.amount;
-            X.description = R.description;
-            // invalid master data
-            if (X.source_id == nullptr || X.wallet_id == nullptr) break;
-            int before = event.cur_n;
-            add_transaction(X);
-            // failed (balance / duplicate)
-            if (event.cur_n == before) break;
-            R.last_generated = gen_date;
+        RecurringTransaction& X = auto_event.get_val(i);
+        while (compare_date(X.start_date, now) <= 0 && compare_date(X.start_date, X.end_date) <= 0) {
+            Transaction tmp;
+            tmp.date = X.start_date;
+            tmp.source = X.source;
+            tmp.source_id = X.source_id;
+            tmp.wallet_id = X.wallet_id;
+            tmp.amount = X.amount;
+            tmp.description = X.description;
+
+            if (valid_date(tmp.date)) just_add_transaction(tmp);
+            X.start_date = next_month(X.start_date);
         }
+        if (compare_date(X.start_date, X.end_date) >= 0) pos.push_back(i);
     }
+    for (int i = 0; i < pos.cur_n; i++) auto_event.del(pos.get_val(i) - i);
 }
-// string
 
-bool contains_substring(const string& text, const string& key) {
-    if (key.empty()) return true;
-    return text.find(key) != string::npos;
-}
-// add, delete, list all, search
-
-void add_recurring() {
-    RecurringTransaction R;
-    string s;
-    cout << "1) Income  2) Expense : ";
-    cin >> R.source;
-    cout << "Start ";
-    input_date(R.start_date);
-    R.last_generated = R.start_date;
-    cout << "End date (day month year, year = 0 for no end): ";
-    cin >> R.end_date.day >> R.end_date.month >> R.end_date.year;
-    cout << "Category name: ";
-    cin.ignore();
-    getline(cin, s);
-    R.source_id = (R.source == 1) ? income.get_id(s) : expense.get_id(s);
-    cout << "Wallet name: ";
-    getline(cin, s);
-    R.wallet_id = wallet.get_id(s);
-    cout << "Amount: ";
-    cin >> R.amount;
-    cout << "Description: ";
-    cin.ignore();
-    getline(cin, R.description);
-    if (R.source_id == nullptr || R.wallet_id == nullptr || R.amount < 0) {
-        cout << "Invalid recurring transaction\n";
+void add_recurring(RecurringTransaction& X) {
+    if (!X.source_id || !X.wallet_id || auto_event.exist(X)) {
+        cout << RED << "=> Failed (Invalid data or Exists)\n" << BLUE;
         return;
     }
-    auto_event.push_back(R);
-    cout << "Recurring transaction added\n";
-}
-void delete_recurring() {
-    int id;
-    cout << "Enter recurring number to delete: ";
-    cin >> id;
-    if (id < 0 || id >= auto_event.cur_n) {
-        cout << "Invalid number\n";
-        return;
-    }
-    auto_event.del(id);
-    cout << "Recurring transaction deleted\n";
-}
-void list_recurring() {
-    for (int i = 0; i < auto_event.cur_n; i++) {
-        RecurringTransaction& R = auto_event.get_val(i);
-        cout << i << ") ";
-        cout << (R.source == 1 ? "Income" : "Expense") << "\n";
-
-        cout << "   Start ";
-        output_date(R.start_date);
-
-        if (R.end_date.year == 0)
-            cout << "   End   none\n";
-        else {
-            cout << "   End   ";
-            output_date(R.end_date);
-        }
-
-        cout << "   Amount      : " << R.amount << "\n";
-        cout << "   Wallet      : " << wallet.get_string(R.wallet_id) << "\n";
-        cout << "   Description : " << R.description << "\n";
-    }
-}
-void search_recurring_by_description() {
-    string key;
-    cout << "Search keyword: ";
-    cin.ignore();
-    getline(cin, key);
-    bool found = false;
-
-    for (int i = 0; i < auto_event.cur_n; i++) {
-        RecurringTransaction& R = auto_event.get_val(i);
-
-        if (contains_substring(R.description, key)) {
-            found = true;
-            cout << i << ") ";
-            cout << (R.source == 1 ? "Income" : "Expense") << "\n";
-            cout << "   Start ";
-            output_date(R.start_date);
-            if (R.end_date.year == 0)
-                cout << "   End   none\n";
-            else {
-                cout << "   End   ";
-                output_date(R.end_date);
-            }
-            cout << "   Amount      : " << R.amount << "\n";
-            cout << "   Wallet      : " << wallet.get_string(R.wallet_id) << "\n";
-            cout << "   Description : " << R.description << "\n";
-        }
-    }
-    if (!found) {
-        cout << "No recurring transaction matches \"" << key << "\"\n";
-    }
+    auto_event.push_back(X);
+    X.source_id->cnt_transaction++;
+    X.wallet_id->cnt_transaction++;
+    cout << GREEN << "=> Successful\n" << BLUE;
 }
 
-// main menu manage
+RecurringTransaction input_recurring() {
+    RecurringTransaction X; string s;
+    separate(); cout << "- Category (1 -> Income , 2 -> Expense) :\n";
+    X.source = input_int(1, 2);
+
+    separate(); cout << "- Start date :\n";
+    X.start_date = input_date(false);
+
+    separate(); cout << "- End date :\n";
+    Date end_d = input_date(true);
+    if (end_d.day == 0) {
+        X.end_date = Date(31, 12, 9999);
+        cout << CYAN << "=> Set to Indefinite\n" << BLUE;
+    }
+    else X.end_date = end_d;
+
+    separate(); s = (X.source == 1) ? "Income" : "Expense";
+    cout << "- " << s << " name :\n";
+    s = input_string();
+    X.source_id = (X.source == 1) ? income.get_id(s) : expense.get_id(s);
+
+    separate(); cout << "- Amount :\n";
+    X.amount = input_long_long(0);
+
+    separate(); cout << "- Wallet name :\n";
+    s = input_string();
+    X.wallet_id = wallet.get_id(s);
+
+    separate(); cout << "- Description :\n";
+    X.description = input_string();
+
+    return X;
+}
 
 void manage_recurring() {
-    int t;
     while (true) {
+        clear_screen();
         separate();
-        cout << "0. Back\n";
-        cout << "1. Add recurring transaction\n";
-        cout << "2. Delete recurring transaction\n";
-        cout << "3. List all recurring transactions\n";
-        cout << "4. Search recurring by name (description)\n";
-        cout << "Choose: ";
-        cin >> t;
+        cout << CYAN << "Manage Recurring\n" << BLUE;
+        separate();
+
+        cout << "[0] Back\n[1] Add\n[2] Delete\n";
+        int t = input_int(0, 2);
+
         if (t == 0) break;
-        if (t == 1) add_recurring();
-        if (t == 2) delete_recurring();
-        if (t == 3) list_recurring();
-        if (t == 4) search_recurring_by_description();
+
+        if (t == 1) {
+            RecurringTransaction X = input_recurring();
+            add_recurring(X);
+            pause();
+        }
+
+        if (t == 2) {
+            if (auto_event.cur_n == 0) {
+                cout << RED << "Empty\n" << BLUE;
+            }
+            else {
+                cout << "ID (0-" << auto_event.cur_n - 1 << "):\n";
+                int id = input_int(0, auto_event.cur_n - 1);
+                auto_event.get_val(id).source_id->cnt_transaction--;
+                auto_event.get_val(id).wallet_id->cnt_transaction--;
+                auto_event.del(id);
+                cout << GREEN << "Deleted\n" << BLUE;
+            }
+            pause();
+        }
+
+        save();
     }
 }

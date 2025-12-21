@@ -4,10 +4,12 @@
 
 using namespace std;
 
+void just_add_transaction(Transaction &X);
+
 void add_transaction(Transaction &X);
 
-void del_transaction(Transaction &X);
+Transaction input_transaction();
 
-void particular_transaction(int source);
+void output_transaction(Transaction X);
 
 void manage_transaction();

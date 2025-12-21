@@ -4,46 +4,33 @@
 #include "Transaction_Management.h"
 #include "Recurring_Management.h"
 #include "Statistics_Management.h"
-using namespace std;
 
-// cap nhat main sau nhe
+using namespace std;
 
 int main(){
     load();
-    apply_recurring_transactions();
-    Dynamic_array<string> A = wallet.get_arr_string();
-    cout << "wallet\n";
-    for (int i = 0 ; i < A.cur_n ; i++){
-        cout << i << " " << A.get_val(i) << "\n";
-    }
-    separate();
-    A = income.get_arr_string();
-    cout << "income\n";
-    for (int i = 0 ; i < A.cur_n ; i++){
-        cout << i << " " << A.get_val(i) << "\n";
-    }
-    separate();
-    cout << "expense\n";
-    A = expense.get_arr_string();
-    for (int i = 0 ; i < A.cur_n ; i++){
-        cout << i << " " << A.get_val(i) << "\n";
-    }
-    return 0;
-    int t;
+    apply_recurring_transaction();
+    cout << BLUE;
     while (true){
+        clear_screen();
+        separate(); cout << CYAN << "PERSONAL FINANCE MANAGER \n" << BLUE;
+        show_dashboard();
         separate();
-        cout << "0) Exit the program\n";
-        cout << "1) Manage master data\n"; 
-        cout << "2) Manage transactions\n";
-        cout << "3) Manage recurring transactions\n";
-        cout << "4) View statistics\n";
-        cout << "Choose : "; cin >> t;
+        cout << "[0] Exit & Save\n";
+        cout << "[1] Manage Master Data\n";
+        cout << "[2] Manage Transactions\n";
+        cout << "[3] Manage Recurring\n";
+        cout << "[4] Statistics & Reports\n";
+        separate();
+        int t = input_int(0 , 4);
         if (t == 0) break;
         if (t == 1) manage_master_data();
         if (t == 2) manage_transaction();
         if (t == 3) manage_recurring();
         if (t == 4) manage_statistics();
     }
+    save();
     clear_all();
+    cout << RESET;
     return 0;
 }
