@@ -1,5 +1,4 @@
 #pragma once
-#include <bits/stdc++.h>
 using namespace std;
 
 const int day_of_month[12] = {31 , 28 , 31 , 30 , 31 , 30 , 31 , 31 , 30 , 31 , 30 , 31};
