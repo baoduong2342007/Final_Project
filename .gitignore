@@ -4,6 +4,7 @@
 *.depend
 *.layout
 *.depend
+*.json
 
 # Ignore build directories
 build/

@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Recurring_Management.h"
 #include "Transaction_Management.h"
+#include "Data_Persistence.h"
 using namespace std;
 
 Date next_month(Date d) {
@@ -69,8 +70,8 @@ RecurringTransaction input_recurring(){
 void manage_recurring() {
     while (true) {
         clear_screen(); separate(); cout << "Manage Recurring\n"; separate();
-        cout << "[0] Back\n[1] Add\n[2] Delete\n[3] Apply Now\n";
-        int t = input_int(0 , 3);
+        cout << "[0] Back\n[1] Add\n[2] Delete\n";
+        int t = input_int(0 , 2);
         if (t == 0) break;
         if (t == 1) {
              RecurringTransaction X = input_recurring();
@@ -87,6 +88,6 @@ void manage_recurring() {
              }
              pause();
         }
-        if (t == 3) { apply_recurring_transaction(); cout << "Applied!\n"; pause(); }
+        save();
     }
 }

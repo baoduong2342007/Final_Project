@@ -209,6 +209,7 @@ void manage_transaction(){
             }
             pause();
         }
+        save();
     }
 }
 

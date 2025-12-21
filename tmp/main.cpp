@@ -10,6 +10,7 @@ using namespace std;
 
 int main(){
     load();
+    apply_recurring_transaction();
     while (true){
         clear_screen();
         separate(); cout << "PERSONAL FINANCE MANAGER \n";

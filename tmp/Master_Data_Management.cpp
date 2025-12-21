@@ -142,6 +142,7 @@ void manage_master_data(){
         if (t == 1) particular_data(wallet , "wallet");
         if (t == 2) particular_data(income , "income");
         if (t == 3) particular_data(expense , "expense");
+        save();
     }
 }
 
