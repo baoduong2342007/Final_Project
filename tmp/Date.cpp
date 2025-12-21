@@ -1,6 +1,12 @@
-#include <bits/stdc++.h>
-#include "date.h"
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
+#include <iostream>
+#include <chrono>
+#include <string>
+
+#include "Date.h"
 using namespace std;
 
 Date current_date(){
