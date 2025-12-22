@@ -112,7 +112,7 @@ void update_recurring(RecurringTransaction& R){
         yes_no = input_int(0,1);
         if (yes_no == 1) {
             cout << "New start date: ";
-            input_date(R.start_date, false);
+            R.start_date = input_date(false);
         }
     }
     // End date
@@ -120,7 +120,7 @@ void update_recurring(RecurringTransaction& R){
     yes_no = input_int(0,1);
     if (yes_no == 1){
         cout << "New end date: ";
-        input_date(R.end_date, true);
+        R.end_date = input_date(true);
     }
     // Source_id and Wallet should not be changed
     // Amount
@@ -156,9 +156,9 @@ void manage_recurring() {
 
         if (t == 1) {
             clear_screen();
-            seperate();
+            separate();
             cout << CYAN << "Add Recurring Transaction\n" << BLUE;
-            seperate();
+            separate();
             RecurringTransaction X = input_recurring();
             add_recurring(X);
             pause();
@@ -166,9 +166,9 @@ void manage_recurring() {
 
         if (t == 2) {
             clear_screen();
-            seperate();
+            separate();
             cout << CYAN << "Delete Recurring Transaction\n" << BLUE;
-            seperate();
+            separate();
             if (auto_event.cur_n == 0) {
                 cout << RED << "No recurring transactions to delete.\n" << BLUE;
             }
@@ -184,17 +184,17 @@ void manage_recurring() {
         }
         if (t == 3){
             clear_screen();
-            seperate();
+            separate();
             cout << CYAN << "List all Recurring Transactions\n" << BLUE;
-            seperate();
+            separate();
             list_recurring();
             pause();
         }
         if (t == 4){
             clear_screen();
-            seperate();
+            separate();
             cout << CYAN << "Update Recurring Transaction\n" << BLUE;
-            seperate();
+            separate();
             if (auto_event.cur_n == 0) {
                 cout << RED << "No recurring transactions to update.\n" << BLUE;
             }
