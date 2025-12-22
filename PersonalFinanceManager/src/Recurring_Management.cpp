@@ -77,6 +77,13 @@ RecurringTransaction input_recurring() {
     return X;
 }
 
+void output_recurring(RecurringTransaction& R){
+    if (R.source == 1) cout << GREEN << "Income " << BLUE;
+    else cout << RED << "Expense " << BLUE;
+    cout << "| Amount: " << R.amount << " | Wallet: " << R.wallet_id << " | ";
+    if (R.source == 1) cout << "Source: ";
+}
+
 void manage_recurring() {
     while (true) {
         clear_screen();
