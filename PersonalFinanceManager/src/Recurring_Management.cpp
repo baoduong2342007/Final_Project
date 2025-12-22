@@ -90,6 +90,20 @@ void output_recurring(RecurringTransaction& R){
     cout << "- Desc: " << X.description << "\n";
 }
 
+void list_recurring(){
+    if (auto_event.cur_n == 0) {
+        cout << RED << "There are currently no recurring transactions.\n" << BLUE;
+    }
+    else{
+        for (int i = 0; i < cur_n; i++){
+            RecurringTransaction r = auto_event.get_val(i);
+            cout << WHITE << "ID: " << i + 1 << BLUE << "\n";
+            output_recurring(r);
+        }
+    }
+    pause();
+}
+
 void manage_recurring() {
     while (true) {
         clear_screen();
