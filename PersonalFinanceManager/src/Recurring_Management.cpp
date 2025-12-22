@@ -149,8 +149,8 @@ void manage_recurring() {
         cout << CYAN << "Manage Recurring\n" << BLUE;
         separate();
 
-        cout << "[0] Back\n[1] Add\n[2] Delete\n[3] List all\n";
-        int t = input_int(0, 3);
+        cout << "[0] Back\n[1] Add\n[2] Delete\n[3] List all\n[4] Update date, amount and description\n";
+        int t = input_int(0, 4);
 
         if (t == 0) break;
 
@@ -205,7 +205,7 @@ void manage_recurring() {
                     cout << GREEN << "Cancelled\n" << BLUE;
                 }
                 else {
-                    RecurringTransaction& R = auto_event.get_val(i);
+                    RecurringTransaction& R = auto_event.get_val(id);
                     output_recurring(R);
                     update_recurring(R);
                 }
