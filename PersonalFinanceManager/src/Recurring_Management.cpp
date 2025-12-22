@@ -81,13 +81,13 @@ void output_recurring(RecurringTransaction& R){
     string s;
     cout << "- Type: " << ((R.source == 1) ? "Income" : "Expense") << "\n";
     cout << "- Date: from " << R.start_date.day << "/" << R.start_date.month << "/" << R.start_date.year;
-    cout << " to " << R.end_date.day << "/" << R.end_date.month << "/" R.end_date.year << "\n";
+    cout << " to " << R.end_date.day << "/" << R.end_date.month << "/" << R.end_date.year << "\n";
     s = (R.source == 1) ? "Income" : "Expense";
     string cat = (R.source == 1) ? income.get_string(R.source_id) : expense.get_string(R.source_id);
     cout << "- " << s << ": " << cat << "\n";
-    cout << "- Amount: " << format_money(X.amount) << "\n";
-    cout << "- Wallet: " << wallet.get_string(X.wallet_id) << "\n";
-    cout << "- Desc: " << X.description << "\n";
+    cout << "- Amount: " << format_money(R.amount) << "\n";
+    cout << "- Wallet: " << wallet.get_string(R.wallet_id) << "\n";
+    cout << "- Desc: " << R.description << "\n";
 }
 
 void list_recurring(){
@@ -95,9 +95,9 @@ void list_recurring(){
         cout << RED << "There are currently no recurring transactions.\n" << BLUE;
     }
     else{
-        for (int i = 0; i < cur_n; i++){
+        for (int i = 0; i < auto_event.cur_n; i++){
             RecurringTransaction r = auto_event.get_val(i);
-            cout << WHITE << "ID: " << i + 1 << BLUE << "\n";
+            cout << WHITE << "ID: " << i << BLUE << "\n";
             output_recurring(r);
         }
     }
