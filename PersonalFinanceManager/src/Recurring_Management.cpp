@@ -78,10 +78,16 @@ RecurringTransaction input_recurring() {
 }
 
 void output_recurring(RecurringTransaction& R){
-    if (R.source == 1) cout << GREEN << "Income " << BLUE;
-    else cout << RED << "Expense " << BLUE;
-    cout << "| Amount: " << R.amount << " | Wallet: " << R.wallet_id << " | ";
-    if (R.source == 1) cout << "Source: ";
+    string s;
+    cout << "- Type: " << ((R.source == 1) ? "Income" : "Expense") << "\n";
+    cout << "- Date: from " << R.start_date.day << "/" << R.start_date.month << "/" << R.start_date.year;
+    cout << " to " << R.end_date.day << "/" << R.end_date.month << "/" R.end_date.year << "\n";
+    s = (R.source == 1) ? "Income" : "Expense";
+    string cat = (R.source == 1) ? income.get_string(R.source_id) : expense.get_string(R.source_id);
+    cout << "- " << s << ": " << cat << "\n";
+    cout << "- Amount: " << format_money(X.amount) << "\n";
+    cout << "- Wallet: " << wallet.get_string(X.wallet_id) << "\n";
+    cout << "- Desc: " << X.description << "\n";
 }
 
 void manage_recurring() {
