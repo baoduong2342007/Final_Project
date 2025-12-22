@@ -104,13 +104,13 @@ void list_recurring(){
 }
 void update_recurring(RecurringTransaction& R){
     separate();
-    cout << CYAN << "Update Recurring Transaction\n" << BLUE;
-    separate();
-
-    // Start date
-    cout << "Change start date?\n";
-    if(input_yes_no()){
-        R.start_date = input_date(false);
+    if (compare_date(R.start_date, now) == 1){
+        cout << "Change start date? " << GREY << "(Yes = 1, No = 0) : " << BLUE;
+        int yes_no = input_int(0,1);
+        if (yes_no == 1) {
+            cout << "Enter new start date " << GREY << (dd/mm/yyyy) << BLUE << ": ";
+            input_date(R.start_date);
+        }
     }
 
     // End date
@@ -170,14 +170,22 @@ void manage_recurring() {
         if (t == 0) break;
 
         if (t == 1) {
+            clear_screen();
+            seperate();
+            cout << CYAN << "Add Recurring Transaction\n" << BLUE;
+            seperate();
             RecurringTransaction X = input_recurring();
             add_recurring(X);
             pause();
         }
 
         if (t == 2) {
+            clear_screen();
+            seperate();
+            cout << CYAN << "Delete Recurring Transaction\n" << BLUE;
+            seperate();
             if (auto_event.cur_n == 0) {
-                cout << RED << "Empty\n" << BLUE;
+                cout << RED << "No recurring transactions to delete.\n" << BLUE;
             }
             else {
                 cout << "ID (0-" << auto_event.cur_n - 1 << "):\n";
@@ -190,8 +198,33 @@ void manage_recurring() {
             pause();
         }
         if (t == 3){
+            clear_screen();
+            seperate();
+            cout << CYAN << "List all Recurring Transactions\n" << BLUE;
+            seperate();
             list_recurring();
             pause();
+        }
+        if (t == 4){
+            clear_screen();
+            seperate();
+            cout << CYAN << "Update Recurring Transaction\n" << BLUE;
+            seperate();
+            if (auto_event.cur_n == 0) {
+                cout << RED << "No recurring transactions to update.\n" << BLUE;
+            }
+            else {
+                cout << "Enter ID " << GREY << "(-1 to cancel)" << BLUE << " : ";
+                int id = input_int(-1, auto_event.cur_n - 1);
+                if (id == -1){
+                    cout << GREEN << "Cancelled\n" << BLUE;
+                }
+                else {
+                    RecurringTransaction& R = auto_event.get_val(i);
+                    output_recurring(R);
+                    update_recurring(R);
+                }
+            }
         }
 
         save();
