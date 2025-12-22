@@ -104,52 +104,37 @@ void list_recurring(){
 }
 void update_recurring(RecurringTransaction& R){
     separate();
-    if (compare_date(R.start_date, now) == 1){
-        cout << "Change start date? " << GREY << "(Yes = 1, No = 0) : " << BLUE;
-        int yes_no = input_int(0,1);
+    int yes_no;
+    cout << GREY << "Answer: Yes = 1, No = 0\n" << BLUE;
+    // Start date can only be changed if start date is in the future
+    if (compare_date(R.start_date, current_date()) == 1){
+        cout << "- Change start date? ";
+        yes_no = input_int(0,1);
         if (yes_no == 1) {
-            cout << "Enter new start date " << GREY << (dd/mm/yyyy) << BLUE << ": ";
-            input_date(R.start_date);
+            cout << "New start date: ";
+            input_date(R.start_date, false);
         }
     }
-
     // End date
-    cout << "Change end date?\n";
-    if(input_yes_no()){
-        Date d = input_date(true);
-        if(d.day == 0) R.end_date = Date(31,12,9999);
-        else R.end_date = d;
+    cout << "- Change end date? ";
+    yes_no = input_int(0,1);
+    if (yes_no == 1){
+        cout << "New end date: ";
+        input_date(R.end_date, true);
     }
-
-    // Source / Category
-    cout << "Change category/source?\n";
-    if(input_yes_no()){
-        cout << "- Name:\n";
-        string s = input_string();
-        R.source_id = (R.source == 1)
-            ? income.get_id(s)
-            : expense.get_id(s);
-    }
-
+    // Source_id and Wallet should not be changed
     // Amount
-    cout << "Change amount?\n";
-    if(input_yes_no()){
-        cout << "- Amount:\n";
+    cout << "Change amount? ";
+    yes_no = input_int(0,1);
+    if(yes_no == 1){
+        cout << "- New amount:\n";
         R.amount = input_long_long(0);
     }
-
-    // Wallet
-    cout << "Change wallet?\n";
-    if(input_yes_no()){
-        cout << "- Wallet name:\n";
-        string s = input_string();
-        R.wallet_id = wallet.get_id(s);
-    }
-
     // Description
-    cout << "Change description?\n";
-    if(input_yes_no()){
-        cout << "- Description:\n";
+    cout << "Change description? ";
+    yes_no = input_int(0,1);
+    if(yes_no == 1){
+        cout << "- New description:\n";
         R.description = input_string();
     }
 
@@ -225,6 +210,7 @@ void manage_recurring() {
                     update_recurring(R);
                 }
             }
+            pause();
         }
 
         save();
