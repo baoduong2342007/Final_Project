@@ -101,7 +101,6 @@ void list_recurring(){
             output_recurring(r);
         }
     }
-    pause();
 }
 
 void manage_recurring() {
@@ -111,8 +110,8 @@ void manage_recurring() {
         cout << CYAN << "Manage Recurring\n" << BLUE;
         separate();
 
-        cout << "[0] Back\n[1] Add\n[2] Delete\n";
-        int t = input_int(0, 2);
+        cout << "[0] Back\n[1] Add\n[2] Delete\n[3] List all\n";
+        int t = input_int(0, 3);
 
         if (t == 0) break;
 
@@ -134,6 +133,10 @@ void manage_recurring() {
                 auto_event.del(id);
                 cout << GREEN << "Deleted\n" << BLUE;
             }
+            pause();
+        }
+        if (t == 3){
+            list_recurring();
             pause();
         }
 
