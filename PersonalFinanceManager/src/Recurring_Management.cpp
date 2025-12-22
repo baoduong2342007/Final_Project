@@ -94,7 +94,7 @@ void list_recurring(){
     if (auto_event.cur_n == 0) {
         cout << RED << "There are currently no recurring transactions.\n" << BLUE;
     }
-    else{
+    else {
         for (int i = 0; i < auto_event.cur_n; i++){
             RecurringTransaction r = auto_event.get_val(i);
             cout << WHITE << "ID: " << i << BLUE << "\n";
@@ -102,6 +102,60 @@ void list_recurring(){
         }
     }
 }
+void update_recurring(RecurringTransaction& R){
+    separate();
+    cout << CYAN << "Update Recurring Transaction\n" << BLUE;
+    separate();
+
+    // Start date
+    cout << "Change start date?\n";
+    if(input_yes_no()){
+        R.start_date = input_date(false);
+    }
+
+    // End date
+    cout << "Change end date?\n";
+    if(input_yes_no()){
+        Date d = input_date(true);
+        if(d.day == 0) R.end_date = Date(31,12,9999);
+        else R.end_date = d;
+    }
+
+    // Source / Category
+    cout << "Change category/source?\n";
+    if(input_yes_no()){
+        cout << "- Name:\n";
+        string s = input_string();
+        R.source_id = (R.source == 1)
+            ? income.get_id(s)
+            : expense.get_id(s);
+    }
+
+    // Amount
+    cout << "Change amount?\n";
+    if(input_yes_no()){
+        cout << "- Amount:\n";
+        R.amount = input_long_long(0);
+    }
+
+    // Wallet
+    cout << "Change wallet?\n";
+    if(input_yes_no()){
+        cout << "- Wallet name:\n";
+        string s = input_string();
+        R.wallet_id = wallet.get_id(s);
+    }
+
+    // Description
+    cout << "Change description?\n";
+    if(input_yes_no()){
+        cout << "- Description:\n";
+        R.description = input_string();
+    }
+
+    cout << GREEN << "=> Updated successfully\n" << BLUE;
+}
+
 
 void manage_recurring() {
     while (true) {
