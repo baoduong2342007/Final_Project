@@ -13,3 +13,5 @@ Transaction input_transaction();
 void output_transaction(Transaction X);
 
 void manage_transaction();
+
+void check_financial_health();

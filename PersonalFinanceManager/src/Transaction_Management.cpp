@@ -249,3 +249,62 @@ void manage_transaction() {
         save();
     }
 }
+
+void check_financial_health() {
+    long long total = get_total_balance();
+    if (total >= 0) return;
+
+    Date now = current_date();
+
+    clear_screen();
+    cout << RED << "\n";
+    cout << "   /!\\ WARNING: NEGATIVE BALANCE DETECTED /!\\ \n";
+    cout << "   ------------------------------------------ \n";
+    cout << "   Current Balance: " << format_money(total) << "\n";
+    cout << "   Alert: Your spending exceeds your total assets!\n\n" << BLUE;
+
+    cout << "=> Review FINANCIAL REPORT for this month (" << now.month << "/" << now.year << ")?\n";
+    cout << "[1] Yes, show details (Income & Expense)\n";
+    cout << "[0] Skip\n";
+
+    int t = input_int(0, 1);
+
+    if (t == 1) {
+        clear_screen();
+        cout << CYAN << "FINANCIAL REPORT: " << now.month << "/" << now.year << "\n" << BLUE;
+
+        bool found = false;
+        long long total_inc_month = 0;
+        long long total_exp_month = 0;
+
+        print_table_header();
+
+        for (int i = 0; i < event.cur_n; i++) {
+            Transaction& trans = event.get_val(i);
+
+            if (trans.date.month == now.month && trans.date.year == now.year) {
+                print_table_row(i, trans);
+
+                if (trans.source == 1) total_inc_month += trans.amount;
+                else total_exp_month += trans.amount;
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+            cout << RED << "   (No transactions recorded this month)\n" << BLUE;
+        } else {
+            cout << string(98, '-') << "\n";
+            cout << "   SUMMARY THIS MONTH:\n";
+            cout << "   + Income : " << GREEN << format_money(total_inc_month) << BLUE << "\n";
+            cout << "   - Expense: " << RED << format_money(total_exp_month) << BLUE << "\n";
+
+            long long net = total_inc_month - total_exp_month;
+            cout << "   = Net    : " << ((net >= 0) ? GREEN : RED) << format_money(net) << BLUE << "\n";
+        }
+
+        cout << "\n";
+        pause();
+    }
+}
