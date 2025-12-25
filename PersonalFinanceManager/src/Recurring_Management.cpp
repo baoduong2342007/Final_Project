@@ -47,7 +47,7 @@ RecurringTransaction input_recurring() {
     RecurringTransaction X; string s;
     separate(); cout << "- Category (1 -> Income , 2 -> Expense) :\n";
     X.source = input_int(1, 2);
-
+    
     separate(); cout << "- Start date :\n";
     X.start_date = input_date(false);
 
@@ -79,27 +79,16 @@ RecurringTransaction input_recurring() {
 
 void output_recurring_row(int id, const RecurringTransaction& R) {
     string type = (R.source == 1) ? "Income" : "Expense";
-
-    string cat = (R.source == 1)
-        ? income.get_string(R.source_id)
-        : expense.get_string(R.source_id);
-
+    string cat = (R.source == 1) ? income.get_string(R.source_id) : expense.get_string(R.source_id);
     string w_name = wallet.get_string(R.wallet_id);
-
-    string start_date =
-        to_string(R.start_date.day) + "/" +
-        to_string(R.start_date.month) + "/" +
+    string start_date = to_string(R.start_date.day) + "/" + to_string(R.start_date.month) + "/" +
         to_string(R.start_date.year);
-
-    string end_date =
-        to_string(R.end_date.day) + "/" +
-        to_string(R.end_date.month) + "/" +
+    string end_date = to_string(R.end_date.day) + "/" + to_string(R.end_date.month) + "/" +
         to_string(R.end_date.year);
-
     string color = (R.source == 1) ? GREEN : RED;
-
+    
     cout << left
-        << setw(5) << id                     // SAME ID width
+        << setw(5) << id
         << setw(12) << start_date
         << setw(12) << end_date
         << setw(10) << type
@@ -119,7 +108,7 @@ void list_recurring() {
 
     cout << CYAN << "ALL RECURRING TRANSACTIONS\n" << BLUE;
     big_separate();
-
+    // title
     cout << YELLOW;
     cout << left << setw(5) << "ID"
         << setw(12) << "Start"
@@ -254,7 +243,7 @@ void manage_recurring() {
                         << setw(20) << "Desc"
                         << "\n" << BLUE;
                     RecurringTransaction& R = auto_event.get_val(id);
-                    output_recurring_row(id, R);
+                    output_recurring_row(id, R); // show the chosen recurring transaction
                     update_recurring(R);
                 }
             }
