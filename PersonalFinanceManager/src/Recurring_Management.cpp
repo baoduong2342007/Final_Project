@@ -77,31 +77,68 @@ RecurringTransaction input_recurring() {
     return X;
 }
 
-void output_recurring(RecurringTransaction& R){
-    string s;
-    cout << "- Type: " << ((R.source == 1) ? "Income" : "Expense") << "\n";
-    cout << "- Date: from " << R.start_date.day << "/" << R.start_date.month << "/" << R.start_date.year;
-    cout << " to " << R.end_date.day << "/" << R.end_date.month << "/" << R.end_date.year << "\n";
-    s = (R.source == 1) ? "Income" : "Expense";
-    string cat = (R.source == 1) ? income.get_string(R.source_id) : expense.get_string(R.source_id);
-    cout << "- " << s << ": " << cat << "\n";
-    cout << "- Amount: " << format_money(R.amount) << "\n";
-    cout << "- Wallet: " << wallet.get_string(R.wallet_id) << "\n";
-    cout << "- Desc: " << R.description << "\n";
+void output_recurring_row(int id, const RecurringTransaction& R) {
+    string type = (R.source == 1) ? "Income" : "Expense";
+
+    string cat = (R.source == 1)
+        ? income.get_string(R.source_id)
+        : expense.get_string(R.source_id);
+
+    string w_name = wallet.get_string(R.wallet_id);
+
+    string start_date =
+        to_string(R.start_date.day) + "/" +
+        to_string(R.start_date.month) + "/" +
+        to_string(R.start_date.year);
+
+    string end_date =
+        to_string(R.end_date.day) + "/" +
+        to_string(R.end_date.month) + "/" +
+        to_string(R.end_date.year);
+
+    string color = (R.source == 1) ? GREEN : RED;
+
+    cout << left
+        << setw(5) << id                     // SAME ID width
+        << setw(12) << start_date
+        << setw(12) << end_date
+        << setw(10) << type
+        << setw(15) << truncate_text(cat, 13)
+        << color << right << setw(15) << format_money(R.amount) << BLUE
+        << "   "
+        << left << setw(15) << truncate_text(w_name, 13)
+        << setw(20) << truncate_text(R.description, 18)
+        << "\n";
 }
 
-void list_recurring(){
+void list_recurring() {
     if (auto_event.cur_n == 0) {
         cout << RED << "There are currently no recurring transactions.\n" << BLUE;
+        return;
     }
-    else {
-        for (int i = 0; i < auto_event.cur_n; i++){
-            RecurringTransaction r = auto_event.get_val(i);
-            cout << WHITE << "ID: " << i << BLUE << "\n";
-            output_recurring(r);
-        }
+
+    cout << CYAN << "ALL RECURRING TRANSACTIONS\n" << BLUE;
+    big_separate();
+
+    cout << YELLOW;
+    cout << left << setw(5) << "ID"
+        << setw(12) << "Start"
+        << setw(12) << "End"
+        << setw(10) << "Type"
+        << setw(15) << "Category"
+        << right << setw(15) << "Amount"
+        << "   "
+        << left << setw(15) << "Wallet"
+        << setw(20) << "Desc"
+        << "\n";
+
+    cout << string(98, '-') << "\n" << BLUE;
+
+    for (int i = 0; i < auto_event.cur_n; i++) {
+        output_recurring_row(i, auto_event.get_val(i));
     }
 }
+
 void update_recurring(RecurringTransaction& R){
     separate();
     int yes_no;
@@ -111,7 +148,7 @@ void update_recurring(RecurringTransaction& R){
         cout << "- Change start date? ";
         yes_no = input_int(0,1);
         if (yes_no == 1) {
-            cout << "New start date: ";
+            cout << "- New start date: ";
             R.start_date = input_date(false);
         }
     }
@@ -119,19 +156,19 @@ void update_recurring(RecurringTransaction& R){
     cout << "- Change end date? ";
     yes_no = input_int(0,1);
     if (yes_no == 1){
-        cout << "New end date: ";
+        cout << "- New end date: ";
         R.end_date = input_date(true);
     }
     // Source_id and Wallet should not be changed
     // Amount
-    cout << "Change amount? ";
+    cout << "- Change amount? ";
     yes_no = input_int(0,1);
     if(yes_no == 1){
         cout << "- New amount:\n";
         R.amount = input_long_long(0);
     }
     // Description
-    cout << "Change description? ";
+    cout << "- Change description? ";
     yes_no = input_int(0,1);
     if(yes_no == 1){
         cout << "- New description:\n";
@@ -205,8 +242,19 @@ void manage_recurring() {
                     cout << GREEN << "Cancelled\n" << BLUE;
                 }
                 else {
+                    cout << YELLOW;
+                    cout << left << setw(5) << "ID"
+                        << setw(12) << "Start"
+                        << setw(12) << "End"
+                        << setw(10) << "Type"
+                        << setw(15) << "Category"
+                        << right << setw(15) << "Amount"
+                        << "   "
+                        << left << setw(15) << "Wallet"
+                        << setw(20) << "Desc"
+                        << "\n" << BLUE;
                     RecurringTransaction& R = auto_event.get_val(id);
-                    output_recurring(R);
+                    output_recurring_row(id, R);
                     update_recurring(R);
                 }
             }
