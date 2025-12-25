@@ -9,10 +9,11 @@ using namespace std;
 
 int main(){
     load();
+    apply_recurring_transaction();
+    save();
     cout << BLUE;
     while (true){
         check_financial_health();
-        apply_recurring_transaction();
         clear_screen();
         separate(); cout << CYAN << "PERSONAL FINANCE MANAGER \n" << BLUE;
         big_separate();
@@ -28,7 +29,11 @@ int main(){
         if (t == 0) break;
         if (t == 1) manage_master_data();
         if (t == 2) manage_transaction();
-        if (t == 3) manage_recurring();
+        if (t == 3) {
+            manage_recurring();
+            apply_recurring_transaction();
+            save();
+        }
         if (t == 4) manage_statistics();
     }
     save();
