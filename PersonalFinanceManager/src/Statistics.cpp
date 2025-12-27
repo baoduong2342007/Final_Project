@@ -24,7 +24,7 @@ void stats_range_summary() {
     long long net = inc - exp;
 
     big_separate();
-    cout << " REPORT PERIOD: " << from.day << "/" << from.month << "/" << from.year
+    cout << "REPORT PERIOD: " << from.day << "/" << from.month << "/" << from.year
          << " - " << to.day << "/" << to.month << "/" << to.year << "\n";
     big_separate();
 
@@ -56,7 +56,7 @@ void stats_yearly_overview() {
     long long net = inc - exp;
 
     big_separate();
-    cout << " FINANCIAL STATEMENT FOR YEAR: " << year << "\n";
+    cout << "FINANCIAL STATEMENT FOR YEAR: " << year << "\n";
     big_separate();
 
     cout << left << setw(20) << "CATEGORY" << right << setw(20) << "AMOUNT (VND)" << "\n";
@@ -98,7 +98,7 @@ void stats_by_source(int source_type) {
     }
 
     big_separate();
-    cout << " DETAILED REPORT FOR YEAR: " << year << "\n";
+    cout << "DETAILED REPORT FOR YEAR: " << year << "\n";
     big_separate();
 
     cout << left << setw(5) << "ID" << setw(30) << "Name" << right << setw(20) << "Total Amount" << "\n";
@@ -209,7 +209,7 @@ void stats_peak_bottom() {
         cout << " RESULT: " << s_mode << " " << s_type << " MONTH\n";
         cout << string(40, '-') << "\n";
         cout << " Month: " << res_m << "/" << res_y << "\n";
-        cout << " Total: " << format_money(target_val) << " VND\n";
+        cout << " Total: " << format_money(target_val) << "\n";
     } else {
         cout << RED << "=> No transactions found.\n" << BLUE;
     }
@@ -242,7 +242,7 @@ void stats_most_valuable_in_range() {
         Transaction& res = event.get_val(idx);
         cout << GREEN << " FOUND RECORD:\n" << BLUE;
         cout << " - Date:   " << res.date.day << "/" << res.date.month << "/" << res.date.year << "\n";
-        cout << " - Amount: " << format_money(res.amount) << " VND\n";
+        cout << " - Amount: " << format_money(res.amount) << "\n";
         cout << " - Wallet: " << (res.wallet_id ? wallet.get_string(res.wallet_id) : "N/A") << "\n";
         string src = (type == 1) ? income.get_string(res.source_id) : expense.get_string(res.source_id);
         cout << " - Source: " << src << "\n";
@@ -252,3 +252,5 @@ void stats_most_valuable_in_range() {
     }
     pause();
 }
+
+

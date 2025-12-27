@@ -30,7 +30,7 @@ string format_money(long long money) {
         s.insert(insertPosition, ",");
         insertPosition -= 3;
     }
-    if (money < 0) return "-" + s;
+    if (money < 0) return "-" + s + " VND";
     return s + " VND";
 }
 
