@@ -35,6 +35,7 @@ string format_money(long long money) {
 }
 
 string truncate_text(string s, int width) {
+    if (width <= 3) return s.substr(0, width);
     if ((int)s.length() > width) {
         return s.substr(0, width - 3) + "...";
     }
