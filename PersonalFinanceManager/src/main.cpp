@@ -11,8 +11,8 @@ int main(){
     load();
     cout << BLUE;
     while (true){
-        check_financial_health();
         apply_recurring_transaction();
+        check_financial_health();
         clear_screen();
         separate(); cout << CYAN << "PERSONAL FINANCE MANAGER \n" << BLUE;
         big_separate();
