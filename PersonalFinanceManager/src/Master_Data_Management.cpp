@@ -1,5 +1,5 @@
-#include "Master_Data_Management.h"
-#include "Data_Persistence.h"
+#include "../include/Master_Data_Management.h"
+#include "../include/Data_Persistence.h"
 #include <iomanip>
 
 void particular_data(Trie& data, string name) {
