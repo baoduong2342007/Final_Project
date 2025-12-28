@@ -24,7 +24,7 @@ int main(){
         cout << "[2] Manage Transactions\n";
         cout << "[3] Manage Recurring\n";
         cout << "[4] Statistics & Reports\n";
-        cout << "[5] Reset\n";
+        cout << "[5] Reset all\n";
         separate();
         int t = input_int(0 , 5);
         if (t == 0) break;
@@ -36,7 +36,23 @@ int main(){
             save();
         }
         if (t == 4) manage_statistics();
-        if (t == 5) clear_all();
+        if (t == 5) {
+            clear_screen();
+            separate();
+            cout << CYAN << "Confirm to reset?\n" << BLUE;
+            separate();
+            cout << "[0] Cancel\n";
+            cout << "[1] Reset\n";
+            separate();
+            int yn = input_int(0, 1);
+            if (yn == 1) {
+                clear_all();
+                cout << GREEN << "DATA RESET\n" << BLUE;
+            }
+            else cout << GREEN << "Cancelled\n" << BLUE;
+            save();
+            pause();
+        }
     }
     save();
     clear_all();
