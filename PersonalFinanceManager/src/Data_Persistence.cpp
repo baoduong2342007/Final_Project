@@ -59,7 +59,7 @@ void save_data(Trie &X , string filename){
 }
 
 void load_transaction(){
-    ifstream fin("transaction.bin" , ios::binary);
+    ifstream fin("../PersonalFinanceManager/data/transaction.bin" , ios::binary);
     if (fin.is_open()){
         if (fin.peek() == ifstream::traits_type::eof()) {
             fin.close(); return;
@@ -96,7 +96,7 @@ void load_transaction(){
 }
 
 void save_transaction(){
-    ofstream fout("transaction.bin" , ios::binary);
+    ofstream fout("../PersonalFinanceManager/data/transaction.bin" , ios::binary);
     if (fout.is_open()){
         fout.write((char*)&event.cur_n , sizeof(int));
         for (int i = 0 ; i < event.cur_n ; i++){
@@ -118,7 +118,7 @@ void save_transaction(){
 }
 
 void load_recurring(){
-    ifstream fin("recurring.bin" , ios::binary);
+    ifstream fin("../PersonalFinanceManager/data/recurring.bin" , ios::binary);
     if (fin.is_open()){
         if (fin.peek() == ifstream::traits_type::eof()) {
             fin.close(); return;
@@ -156,7 +156,7 @@ void load_recurring(){
 }
 
 void save_recurring(){
-    ofstream fout("recurring.bin" , ios::binary);
+    ofstream fout("/PersonalFinanceManager/data/recurring.bin" , ios::binary);
     if (fout.is_open()){
         fout.write((char*)&auto_event.cur_n , sizeof(int));
         for (int i = 0 ; i < auto_event.cur_n ; i++){
@@ -179,17 +179,17 @@ void save_recurring(){
 }
 
 void load(){
-    load_data(wallet , "wallet.bin");
-    load_data(income , "income.bin");
-    load_data(expense , "expense.bin");
+    load_data(wallet , "../PersonalFinanceManager/data/wallet.bin");
+    load_data(income , "../PersonalFinanceManager/data/income.bin");
+    load_data(expense , "../PersonalFinanceManager/data/expense.bin");
     load_transaction();
     load_recurring();
 }
 
 void save(){
-    save_data(wallet , "wallet.bin");
-    save_data(income , "income.bin");
-    save_data(expense , "expense.bin");
+    save_data(wallet , "../PersonalFinanceManager/data/wallet.bin");
+    save_data(income , "../PersonalFinanceManager/data/income.bin");
+    save_data(expense , "../PersonalFinanceManager/data/expense.bin");
     save_transaction();
     save_recurring();
 }
