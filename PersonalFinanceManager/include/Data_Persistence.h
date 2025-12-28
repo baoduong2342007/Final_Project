@@ -16,3 +16,5 @@ void save_recurring();
 void load();
 
 void save();
+
+void manage_reset();
