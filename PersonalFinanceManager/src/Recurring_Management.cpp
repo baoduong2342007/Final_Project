@@ -1,7 +1,7 @@
-#include "Global.h"
-#include "Recurring_Management.h"
-#include "Transaction_Management.h"
-#include "Data_Persistence.h"
+#include "../include/Global.h"
+#include "../include/Recurring_Management.h"
+#include "../include/Transaction_Management.h"
+#include "../include/Data_Persistence.h"
 using namespace std;
 
 Date next_month(Date d) {
