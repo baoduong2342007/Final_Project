@@ -24,8 +24,9 @@ int main(){
         cout << "[2] Manage Transactions\n";
         cout << "[3] Manage Recurring\n";
         cout << "[4] Statistics & Reports\n";
+        cout << "[5] Reset\n";
         separate();
-        int t = input_int(0 , 4);
+        int t = input_int(0 , 5);
         if (t == 0) break;
         if (t == 1) manage_master_data();
         if (t == 2) manage_transaction();
@@ -35,6 +36,7 @@ int main(){
             save();
         }
         if (t == 4) manage_statistics();
+        if (t == 5) clear_all();
     }
     save();
     clear_all();
