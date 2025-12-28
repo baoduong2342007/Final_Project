@@ -49,8 +49,8 @@ RecurringTransaction input_recurring() {
     X.source = input_int(1, 2);
     
     separate(); cout << "- Start date :\n";
-    X.start_date = input_date(false);
-
+    X.display_start = input_date(false);
+    X.start_date = X.display_start;
     separate(); cout << "- End date :\n";
     Date end_d = input_date(true);
     if (end_d.day == 0) {
@@ -81,8 +81,8 @@ void output_recurring_row(int id, const RecurringTransaction& R) {
     string type = (R.source == 1) ? "Income" : "Expense";
     string cat = (R.source == 1) ? income.get_string(R.source_id) : expense.get_string(R.source_id);
     string w_name = wallet.get_string(R.wallet_id);
-    string start_date = to_string(R.start_date.day) + "/" + to_string(R.start_date.month) + "/" +
-        to_string(R.start_date.year);
+    string start_date = to_string(R.display_start.day) + "/" + to_string(R.display_start.month) + "/" +
+        to_string(R.display_start.year);
     string end_date = to_string(R.end_date.day) + "/" + to_string(R.end_date.month) + "/" +
         to_string(R.end_date.year);
     string color = (R.source == 1) ? GREEN : RED;
@@ -133,12 +133,13 @@ void update_recurring(RecurringTransaction& R){
     int yes_no;
     cout << GREY << "Answer: Yes = 1, No = 0\n" << BLUE;
     // Start date can only be changed if start date is in the future
-    if (compare_date(R.start_date, current_date()) == 1){
+    if (compare_date(R.display_start, current_date()) == 1){
         cout << "- Change start date? ";
         yes_no = input_int(0,1);
         if (yes_no == 1) {
             cout << "- New start date: ";
-            R.start_date = input_date(false);
+            R.display_start = input_date(false);
+            R.start_date = R.display_start;
         }
     }
     // End date
