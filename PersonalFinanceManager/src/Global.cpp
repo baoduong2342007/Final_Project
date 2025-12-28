@@ -1,4 +1,4 @@
-#include "Global.h"
+#include "../include/Global.h"
 using namespace std;
 
 Dynamic_array<Transaction> event;
