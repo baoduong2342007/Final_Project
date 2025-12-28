@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Statistics_Management.h"
-#include "Statistics.h"
-#include "Global.h"
+#include "../include/Statistics_Management.h"
+#include "../include/Statistics.h"
+#include "../include/Global.h"
 
 using namespace std;
 
