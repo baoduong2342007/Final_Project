@@ -195,3 +195,21 @@ void save(){
     save_transaction();
     save_recurring();
 }
+
+void manage_reset(){
+    clear_screen();
+    separate();
+    cout << CYAN << "Confirm to reset?\n" << BLUE;
+    separate();
+    cout << "[0] Cancel\n";
+    cout << "[1] Reset\n";
+    separate();
+    int yn = input_int(0, 1);
+    if (yn == 1) {
+    clear_all();
+    cout << GREEN << "DATA RESET\n" << BLUE;
+    }
+    else cout << GREEN << "Cancelled\n" << BLUE;
+    save();
+    pause();
+}
