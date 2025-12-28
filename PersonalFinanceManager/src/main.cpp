@@ -1,9 +1,9 @@
-#include "Global.h"
-#include "Data_Persistence.h"
-#include "Master_Data_Management.h"
-#include "Transaction_Management.h"
-#include "Recurring_Management.h"
-#include "Statistics_Management.h"
+#include "../include/Global.h"
+#include "../include/Data_Persistence.h"
+#include "../include/Master_Data_Management.h"
+#include "../include/Transaction_Management.h"
+#include "../include/Recurring_Management.h"
+#include "../include/Statistics_Management.h"
 
 using namespace std;
 
